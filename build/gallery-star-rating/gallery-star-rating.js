@@ -36,7 +36,7 @@ Y.extend(StarRatingWidget, Y.Widget, {
     HOVER_STAR_CLASS:     'yui3-star-hover',
     STAR_LIST_TEMPLATE:   '{stars}',
     STAR_CANCEL_TEMPLATE: '<label class="yui3-star-clear"><input type="radio" name="{name}" value=""><span>{label}</span></label>',
-    STAR_ITEM_TEMPLATE:   '<label class="yui3-star"><input type="radio" name="{name}" value="{value}"><span>{value}</span></label>',
+    STAR_ITEM_TEMPLATE:   '<label class="yui3-star"><input type="radio" name="{name}" value="{value}"><span>{label}</span></label>',
 
     initializer: function(config) {
         var options = this.get('options');
@@ -139,7 +139,6 @@ Y.extend(StarRatingWidget, Y.Widget, {
     updateCaption: function() {
         var element = this.get('captionEl'),
             caption = this.get('caption');
-
         if ( !element ) {
             return;
         }
@@ -166,7 +165,7 @@ Y.extend(StarRatingWidget, Y.Widget, {
         var nodes       = this.get('contentBox').all(this.STAR_SELECTOR),
             enableClass = this.HOVER_STAR_CLASS,
             value       = this._valueFromElement( e.currentTarget ),
-            title       = e.currentTarget.get('title');
+            title       = e.currentTarget.getContent();
 
         nodes.removeClass(enableClass);
         nodes.each(
