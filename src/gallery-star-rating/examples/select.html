@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YUI3 Star Rating Example</title>
+<!--        <link rel="stylesheet" type="text/css" href="../../../build/gallery-star-rating/assets/gallery-star-rating.css">-->
+        <link rel="stylesheet" type="text/css" href="../assets/gallery-star-rating.css">
+    </head>
+
+    <body>
+        <h2>Standalone widget</h2>
+        <div id="rating"></div>
+
+        <form method="post">
+            <h2>And a plugin</h2>
+            <div>
+                <label>
+                    A default clear option:
+                    <select name="rating" class="rating">
+                        <option>N/A</option>
+                        <option value="0">Terrible</option>
+                        <option value="1">Bad</option>
+                        <option value="2">Mediocre</option>
+                        <option value="3">Good</option>
+                        <option value="4">Great</option>
+                        <option value="5">Awesome</option>
+                    </select>
+                    <span class="caption"></span>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Second Rating, must have a value selected after initial selection
+                    <select name="second_rating" class="rating">
+                        <option value="0">Terrible</option>
+                        <option value="1">Bad</option>
+                        <option value="2">Mediocre</option>
+                        <option value="3">Good</option>
+                        <option value="4">Great</option>
+                        <option value="5">Awesome</option>
+                    </select>
+                    <span class="caption"></span>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    Third Rating, with a value:
+                    <select name="third_rating" class="rating">
+                        <option value="0">Terrible</option>
+                        <option value="1">Bad</option>
+                        <option value="2">Mediocre</option>
+                        <option value="3">Good</option>
+                        <option value="4" selected="true">Great</option>
+                        <option value="5">Awesome</option>
+                    </select>
+                    <span class="caption"></span>
+                </label>
+            </div>
+
+            <input type="submit" value="Do eet">
+        </form>
+        <div id="output"></div>
+        <script type="text/javascript" src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+        <script type="text/javascript">
+        YUI({
+            modules: {
+                'gallery-star-rating': {
+                    fullpath: '../../../build/gallery-star-rating/gallery-star-rating-debug.js',
+                    requires: [ 'widget', 'plugin', 'base', 'node', 'event' ]
+                }
+            }
+        }).use('gallery-star-rating', function(Y) {
+            new Y.StarRating({
+                name:    'rating',
+                srcNode: '#rating',
+                options: [
+                    [ null, 'N/A' ],
+                    [ 0, 'Bad'  ],
+                    [ 1, 'Ok'   ],
+                    [ 2, 'Good' ],
+                ]
+            }).render();
+
+            Y.all('select.rating').plug(
+                { fn: Y.Plugin.StarRating,
+                    cfg: {
+                        captionEl: function() {
+                            return this.get('boundingBox').ancestor('div').one('.caption');
+                        }
+                    }
+                }
+            );
+            Y.one('form').on('submit',
+                function(e) {
+                    e.preventDefault();
+                    var output = Y.one('#output');
+                    e.currentTarget.all('select').each(
+                        function(el) {
+                            output.append('<p>' + el.get('name') + ' is set to ' + el.get('value') + '</p>');
+                        }
+                    );
+                }
+            );
+        });
+        </script> 
+    </body>
+</html>
