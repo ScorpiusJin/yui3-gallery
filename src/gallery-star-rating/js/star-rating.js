@@ -52,6 +52,10 @@ Y.extend(StarRatingWidget, Y.Widget, {
             this.set('captionEl', this.get('captionEl').call(this) );
         }
 
+        if ( this.get('readOnly') ) {
+            this.set('allowClear', false);
+        }
+
         return this;
     },
 
