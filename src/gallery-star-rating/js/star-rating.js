@@ -17,6 +17,7 @@ Y.mix(StarRatingWidget, {
         'min':        { value: 0 },
         'max':        { value: 5 },
         'allowClear': { value: true },
+        'readOnly':   { value: false },
         'value': {
             value: null,
             validator: function(val) { return this._validateValue(val); }
@@ -94,16 +95,17 @@ Y.extend(StarRatingWidget, Y.Widget, {
     bindUI: function() {
         var links  = this.get('contentBox').all('label'),
             stars  = this.get('contentBox').all('.yui3-star span');
-        
-        links.on('click',     this._defClickFn, this);
-        stars.on('mouseover', this._defMouseOverFn, this);
-        stars.on('mouseout',  this._defMouseOutFn, this);
 
+        if (!this.get('readOnly')) {
+            links.on('click',     this._defClickFn, this);
+            stars.on('mouseover', this._defMouseOverFn, this);
+            stars.on('mouseout',  this._defMouseOutFn, this);
 
-        this.after('valueChange', this.syncUI, this);
+            this.after('valueChange', this.syncUI, this);
 
-        if ( this.get('captionEl') ) {
-            this.after('captionChange', this.updateCaption, this);
+            if ( this.get('captionEl') ) {
+                this.after('captionChange', this.updateCaption, this);
+            }
         }
     },
 
@@ -264,7 +266,8 @@ Y.extend(StarRatingPlugin, Y.Plugin.Base, {
             boundingBox: host.get('parentNode'),
             input:      host,
             value:      setValue,
-            allowClear: allowClear
+            allowClear: allowClear,
+            readOnly:   host.get('disabled')
         }).render();
 
         /* Disable the select, we don't want it to submit since we're replacing
