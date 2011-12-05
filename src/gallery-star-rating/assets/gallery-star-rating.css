@@ -1,0 +1,55 @@
+.yui3-starratingwidget-content {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    clear: both;
+}
+.yui3-starratingwidget-content .yui3-star-clear,
+.yui3-starratingwidget-content .yui3-star {
+    margin:  0;
+    padding: 0;
+    display: block;
+    float: left;
+    list-style-type: none;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.yui3-starratingwidget-content .yui3-star-clear span,
+.yui3-starratingwidget-content .yui3-star span {
+    display: block;
+
+    width:  16px;
+    height: 0px;
+
+    margin: 0;
+    border: 0;
+    padding: 16px 0 0 0;
+
+    background-color:  inherit;
+    background-image:  url('../assets/jquery/jquery.ui.stars.gif');
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+}
+
+.yui3-starratingwidget-content .yui3-star span {
+    background-position: 0 -32px;
+}
+.yui3-starratingwidget-content .yui3-star-selected span {
+    background-position: 0 -48px;
+}
+.yui3-starratingwidget-content .yui3-star-hover span {
+    background-position: 0 -64px;
+}
+
+.yui3-starratingwidget-content .yui3-star-clear input,
+.yui3-starratingwidget-content .yui3-star input {
+    position: absolute;
+    top: -20px;
+
+    margin: 0;
+    padding: 0;
+
+}
