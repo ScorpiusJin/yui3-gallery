@@ -125,7 +125,7 @@ Y.extend(StarRatingWidget, Y.Widget, {
                     var input  = el.one('input'),
                         el_val = this._valueFromElement(input);
                     input.set('checked', false);
-                    input.setAttribute('checked', false);
+                    input.removeAttribute('checked');
                     if ( Y.Lang.isNumber(el_val) && el_val <= value ) {
                         el.addClass(enableClass);
                         /* Make sure the markup element is selected */
