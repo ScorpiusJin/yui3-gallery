@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Inline Editable Form" default="local">
+    <description>Inline plugin to replace a node's content with a form on click and then handle the submission.</description>
+    <property file="build.properties" />
+    <import file="${builddir}/3.x/bootstrap.xml" />
+</project>
