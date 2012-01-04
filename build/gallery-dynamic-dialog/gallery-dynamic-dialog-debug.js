@@ -25,13 +25,13 @@ show a dialog from a template on the page.
   // These are the defaults. Any link with open-dialog as a class
   // will find a node from the href="#dialog-template-id" and open it.
   dialogs.setupDelegates({
-     'a.open-dialog':   'openDialog',
+     'a.open-dialog':   'click',
      // This will fetch the href and display the results in the dialog.
      // Your backend will have to know how to send partial renders out.
-     'a.remote-dialog': 'openRemoteDialog'
+     'a.remote-dialog': 'click'
   });
 
-  dialog.on('openDialog', function(e) {
+  dialog.on('show', function(e) {
     // Immediately close it! This is absurd!
     e.dialog.hide();
   });
@@ -72,6 +72,8 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             defaultFn: this._defSubmitFn,
             preventable: true
         });
+
+        this.publish('show', { preventable: false });
     },
 
     setupDelegates: function() {
@@ -135,7 +137,21 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         Y.io( source, cfg );
     },
 
+    open: function(selector) {
+        var node = Y.one(selector),
+            e    = {
+                currentTarget:  node,
+                preventDefault: function() { },
+                halt:           function() { }
+            };
+        this._dialogFromNode(e);
+    },
+
     _triggerEventFn: function(e) {
+        this._dialogFromNode(e);
+    },
+
+    _dialogFromNode: function(e) {
         var target   = e.currentTarget,
             source   = target.get('tagName') === 'A' ?
                         target.get('href') : target.get('target'),
@@ -209,9 +225,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                     submitFn(e);
                 }, overlay);
             }
-            Y.log('Got overlay: ' + overlay);
+
             overlay.trigger = target;
             overlay.show();
+            this.fire('show', { dialog: overlay, trigger: target });
         }
     },
 
@@ -220,17 +237,28 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             title   = element.getAttribute('title') || template.getAttribute('title') || '',
             content = sub( template.getContent(), attrs ),
             modal   = element.getAttribute('data-modal') || template.getAttribute('data-modal') || this.get('modal'),
+            zIndex  = element.getAttribute('data-zindex') || this.get('zIndex'),
             panel   = null,
             buttons = this.BUTTONS,
             async   = template.getAttribute('data-async') === 'true',
             submitFn   = Y.bind( this._defSubmitButtonFn, this ),
+            closeLabel = this.get('closeLabel'),
             contentBox = null,
             form       = null;
         panel = new Panel({
             headerContent:  title,
             bodyContent:    content,
             modal:          modal,
-            centered:       true
+            centered:       true,
+            zIndex:         zIndex,
+            buttons       : [
+                {
+                    value: closeLabel,
+                    section: Y.WidgetStdMod.HEADER,
+                    classNames: [ 'closer' ],
+                    action: function(e) { this.hide(); }
+                }
+            ]
         });
 
         panel.render( this.container );
@@ -391,7 +419,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
 }, {
     ATTRS: { 
-       modal: { value: false } 
+        modal       : { value: false },
+        zIndex      : { value: 1 },
+        closeLabel  : { value: "✕" }
     }
 });
 
