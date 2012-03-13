@@ -261,7 +261,7 @@ RESTSync.prototype = {
     sync : function (action, options, callback) {
         options || (options = {});
 
-        var url     = this._getURL(),
+        var url     = this._getURL(action),
             method  = RESTSync.HTTP_METHODS[action],
             headers = Y.merge(RESTSync.HTTP_HEADERS, options.headers),
             timeout = options.timeout || RESTSync.HTTP_TIMEOUT,
@@ -316,15 +316,16 @@ RESTSync.prototype = {
     This method correctly handles variations of the `url` property/method.
 
     @method _getURL
+    @param {String} action Sync action to perform.
     @return {String} the URL for the XHR
     @protected
     **/
-    _getURL : function () {
+    _getURL : function (action) {
         var url = this.url,
             data;
 
         if (isFunction(url)) {
-            return this.url();
+            return this.url(action);
         }
 
         if (this instanceof Y.Model) {
@@ -384,4 +385,4 @@ RESTSync.prototype = {
 Y.namespace('ModelSync').REST = RESTSync;
 
 
-}, 'gallery-2012.01.04-22-09' ,{requires:['model', 'model-list', 'io-base', 'json-stringify'], skinnable:false});
+}, '@VERSION@' ,{skinnable:false, requires:['model', 'model-list', 'io-base', 'json-stringify']});
