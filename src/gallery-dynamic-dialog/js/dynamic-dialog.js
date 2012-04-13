@@ -103,6 +103,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
+
+                        this.fire( 'ioSuccess', o );
+
                         e.preventDefault = function() { };
                         callback(e);
                     },
@@ -116,8 +119,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
-                        e.preventDefault = function() { };
 
+                        this.fire( 'ioFailure', o );
+
+                        e.preventDefault = function() { };
                         callback(e);
                     }
                 }
