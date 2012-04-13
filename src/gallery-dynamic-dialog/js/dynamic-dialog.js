@@ -296,6 +296,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             });
         }
 
+        panel.on('visibileChange', function(e) {
+            this.fire('visibleChange', e);
+        }, this);
+
         /* How should we align? */
 
         this.panels[ '#' + template.get('id') ] = panel;
