@@ -351,9 +351,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         cfg.form    = { id: form };
         cfg.context = this;
         cfg.arguments = {
-            dialog:  dialog,
-            form:    form,
-            trigger: trigger
+            dialog         : dialog,
+            form           : form,
+            trigger        : trigger,
+            preventDefault : e.preventDefault
         };
         cfg.on = {
             success: this._ioSuccess,
