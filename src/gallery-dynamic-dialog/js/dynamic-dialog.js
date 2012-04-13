@@ -296,7 +296,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             });
         }
 
-        panel.on('visibileChange', function(e) {
+        panel.on('visibleChange', function(e) {
             this.fire('visibleChange', e);
         }, this);
 
