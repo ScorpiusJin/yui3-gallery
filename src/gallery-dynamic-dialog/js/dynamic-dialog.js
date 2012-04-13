@@ -88,12 +88,20 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                         target.get('href') : target.get('target'),
             async    = target.getAttribute('data-async') === 'true',
             title    = (target.getAttribute('title') || ''),
-            callback = Y.bind(this._triggerEventFn, this),
-            error    = this.get('remoteFailureText'),
+            dialog   = this,
+            callback = Y.bind(dialog._triggerEventFn, dialog),
+            error    = dialog.get('remoteFailureText'),
             cfg      = {
                 method: 'GET',
+                arguments: {
+                    dialog: dialog
+                },
                 on: {
-                    success: function(id, o) {
+                    success: function(id, o, args) {
+                        args.response = o;
+                        args.preventDefault = e.preventDefault;
+                        dialog.fire('ioSuccess', args);
+
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
                         fragment.append('<div>' + o.responseText + '</div>');
                         fragment = fragment.one('div');
@@ -104,12 +112,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                         e.dialogId = target.get('id');
                         e.template = fragment;
 
-                        this.fire( 'ioSuccess', o );
-
                         e.preventDefault = function() { };
                         callback(e);
                     },
-                    failure: function(id, o) {
+                    failure: function(id, o, args) {
+                        args.response = o;
+                        args.preventDefault = e.preventDefault;
+                        dialog.fire('ioFailure', args);
+
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
                         fragment.append('<div>' + error + '</div>');
                         fragment = fragment.one('div');
@@ -119,8 +129,6 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
-
-                        this.fire( 'ioFailure', o );
 
                         e.preventDefault = function() { };
                         callback(e);
