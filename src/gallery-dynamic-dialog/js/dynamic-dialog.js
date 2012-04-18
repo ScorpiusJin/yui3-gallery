@@ -99,7 +99,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                 on: {
                     success: function(id, o, args) {
                         args.response = o;
-                        args.preventDefault = e.preventDefault;
+                        args.preventDefault = bind(e.preventDefault, e);
                         dialog.fire('ioSuccess', args);
 
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
@@ -117,7 +117,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                     },
                     failure: function(id, o, args) {
                         args.response = o;
-                        args.preventDefault = e.preventDefault;
+                        args.preventDefault = bind(e.preventDefault, e);
                         dialog.fire('ioFailure', args);
 
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
