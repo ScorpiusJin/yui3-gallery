@@ -61,12 +61,12 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             preventable: true
         });
 
-        this.publish('ioSuccess', {
+        this.publish('getSuccess', {
             defaultFn: this._triggerEventFn,
             preventable: true
         });
 
-        this.publish('ioFailure', {
+        this.publish('getFailure', {
             defaultFn: this._triggerEventFn,
             preventable: true
         });
@@ -121,7 +121,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                         e.template = fragment;
                         e.domTarget = e.currentTarget;
 
-                        dialog.fire('ioSuccess', e);
+                        dialog.fire('getSuccess', e);
                     },
                     failure: function(id, o, args) {
                         e.args = args;
@@ -138,7 +138,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                         e.template = fragment;
                         e.domTarget = e.currentTarget;
 
-                        dialog.fire('ioFailure', e);
+                        dialog.fire('getFailure', e);
                     }
                 }
             };
