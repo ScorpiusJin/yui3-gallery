@@ -61,6 +61,16 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             preventable: true
         });
 
+        this.publish('getSuccess', {
+            defaultFn: this._triggerEventFn,
+            preventable: true
+        });
+
+        this.publish('getFailure', {
+            defaultFn: this._triggerEventFn,
+            preventable: true
+        });
+
         this.publish('show', { preventable: false });
     },
 
@@ -88,12 +98,18 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                         target.get('href') : target.get('target'),
             async    = target.getAttribute('data-async') === 'true',
             title    = (target.getAttribute('title') || ''),
-            callback = Y.bind(this._triggerEventFn, this),
-            error    = this.get('remoteFailureText'),
+            dialog   = this,
+            error    = dialog.get('remoteFailureText'),
             cfg      = {
                 method: 'GET',
+                arguments: {
+                    dialog: dialog
+                },
                 on: {
-                    success: function(id, o) {
+                    success: function(id, o, args) {
+                        e.args = args;
+                        e.response = o;
+
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
                         fragment.append('<div>' + o.responseText + '</div>');
                         fragment = fragment.one('div');
@@ -103,10 +119,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
-                        e.preventDefault = function() { };
-                        callback(e);
+                        e.domTarget = e.currentTarget;
+
+                        dialog.fire('getSuccess', e);
                     },
-                    failure: function(id, o) {
+                    failure: function(id, o, args) {
+                        e.args = args;
+                        e.response = o;
+
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
                         fragment.append('<div>' + error + '</div>');
                         fragment = fragment.one('div');
@@ -116,9 +136,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
-                        e.preventDefault = function() { };
+                        e.domTarget = e.currentTarget;
 
-                        callback(e);
+                        dialog.fire('getFailure', e);
                     }
                 }
             };
@@ -140,7 +160,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     _dialogFromNode: function(e) {
-        var target   = e.currentTarget,
+        var target   = e.domTarget ? e.domTarget : e.currentTarget,
             source   = target.get('tagName') === 'A' ?
                         target.get('href') : target.get('target'),
             attrs    = {},
@@ -297,6 +317,12 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         }
 
         /* How should we align? */
+        panel.on('visibleChange', function(e) {
+            this.fire('visibleChange', { 
+                event: e,
+                panel: panel
+            });
+        }, this);        
 
         this.panels[ '#' + template.get('id') ] = panel;
 
@@ -334,9 +360,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         cfg.form    = { id: form };
         cfg.context = this;
         cfg.arguments = {
-            dialog:  dialog,
-            form:    form,
-            trigger: trigger
+            dialog         : dialog,
+            form           : form,
+            trigger        : trigger,
+            preventDefault : e.preventDefault
         };
         cfg.on = {
             success: this._ioSuccess,
