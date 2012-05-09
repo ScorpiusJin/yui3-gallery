@@ -38,6 +38,9 @@ Y.PopupCalendar = Y.Base.create('popup-calendar', Y.Calendar, [Y.WidgetPosition,
 
         if (minDataDate) {
             minDate = new Date(minDataDate);
+            if (minDate.toString() == "Invalid Date") {
+                minDate = new Date();
+            }
             this.set('startDate', minDate);
             this.set('minimumDate', minDate);
 

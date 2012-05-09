@@ -3,10 +3,23 @@
         initializer: function(config) {
             Y.log('initializer', 'info', this.name);
 
-            var startInput = config.calendars[0].start.input;
+            var startInput = config.calendars[0].start.input,
+                minDate = startInput.getData('min-date'),
+                maxDate = startInput.getData('max-date');
 
-            if (!config.startDate) { this.set('startDate', new Date(startInput.getData('min-date'))); }
-            if (!config.endDate) { this.set('endDate', new Date(startInput.getData('max-date'))); }
+            if (!config.startDate) {
+                if (minDate) {
+                    this.set('startDate', minDate);
+                } else {
+                    this.set('startDate', new Date());
+                }
+            }
+
+            if (!config.endDate) {
+                if (maxDate) {
+                    this.set('endDate', maxDate);
+                }
+            }
 
             Y.Array.each(config.calendars, this._instantiateCalendars, this);
         },
