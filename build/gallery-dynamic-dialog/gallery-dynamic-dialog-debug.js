@@ -275,21 +275,28 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         // this in. Didn't see a way via the API in Widget.js.
         panel.get('boundingBox').addClass('yui3-dynamic-dialog');
 
+        var dialogClasses = template.getAttribute('data-dialog-class');
+        if (dialogClasses) {
+            panel.get('boundingBox').addClass(dialogClasses.split(' '));
+        }
+
         contentBox = panel.get('contentBox');
         form       = contentBox.one('form');
 
         /* If we have a form, setup form buttons */
         if ( form ) {
+            var cancelClasses = template.getAttribute('data-cancel-class') || '';
             panel.addButton({
-                value: this.get('cancelLabel'),
-                classNames: [ 'yui3-dynamic-dialog-cancel' ],
+                value: template.getAttribute('data-cancel-label') || this.get('cancelLabel'),
+                classNames: [ 'yui3-dynamic-dialog-cancel', cancelClasses.split(' ')],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
 
+            var submitClasses = template.getAttribute('data-submit-class') || '';
             panel.addButton({
-                value: this.get('submitLabel'),
-                classNames: [ 'yui3-dynamic-dialog-submit' ],
+                value: template.getAttribute('data-submit-label') || this.get('submitLabel'),
+                classNames: [ 'yui3-dynamic-dialog-submit', submitClasses.split(' ') ],
                 action: function(e) {
                     e.preventDefault();
                     e.async   = async;
@@ -310,9 +317,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         }
         /* Otherwise, just a simple Hide button */
         else {
+            var okClasses = template.getAttribute('data-ok-class') || '';
+
             panel.addButton({
-                value: this.get('okLabel'),
-                classNames: [ 'yui3-dynamic-dialog-ok' ],
+                value: template.getAttribute('data-ok-label') || this.get('okLabel'),
+                classNames: [ 'yui3-dynamic-dialog-ok', okClasses.split(' ') ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
@@ -437,7 +446,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     ATTRS: {
         modal             : { value: false },
         zIndex            : { value: 1 },
-        closeLabel        : { value: "✕" },
+        closeLabel        : { value: "\u2715" },
         okLabel           : { value: 'OK' },
         cancelLabel       : { value: 'Cancel' },
         submitLabel       : { value: 'Submit' },
@@ -453,4 +462,4 @@ Y.DynamicDialog = DynamicDialog;
 
 
 
-}, '@VERSION@' ,{requires:['anim','substitute','widget','base','panel','io','io-form','event-delegate']});
+}, '@VERSION@' ,{requires:['anim','substitute','widget','base','panel','io','io-form','event-delegate'], optional:['anim','substitute','widget','base','panel','io','io-form','event-delegate'], supersedes:['anim','substitute','widget','base','panel','io','io-form','event-delegate']});
