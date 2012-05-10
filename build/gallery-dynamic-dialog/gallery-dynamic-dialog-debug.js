@@ -49,16 +49,6 @@ var DynamicDialog,
     Oeach    = Y.Object.each;
 
 DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
-    DIALOG_CLASS:     'open-dialog',
-    REMOTE_CLASS:     'remote-dialog',
-    REMOTE_FAILURE_TEXT: '<p>There was a problem fetching the dialog content. Sorry.</p>',
-    IO_FAILURE_CLASS: 'yui3-dynamic-dialog-io-failure',
-    BUTTONS: {
-        OK:     'Ok',
-        CANCEL: 'Cancel',
-        SUBMIT: 'Submit'
-    },
-
     container: Y.one(document.body),
     panels: {},
 
@@ -70,6 +60,16 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     initializer: function() {
         this.publish('submit', {
             defaultFn: this._defSubmitFn,
+            preventable: true
+        });
+
+        this.publish('getSuccess', {
+            defaultFn: this._triggerEventFn,
+            preventable: true
+        });
+
+        this.publish('getFailure', {
+            defaultFn: this._triggerEventFn,
             preventable: true
         });
 
@@ -100,12 +100,18 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                         target.get('href') : target.get('target'),
             async    = target.getAttribute('data-async') === 'true',
             title    = (target.getAttribute('title') || ''),
-            callback = Y.bind(this._triggerEventFn, this),
-            error    = this.REMOTE_FAILURE_TEXT,
+            dialog   = this,
+            error    = dialog.get('remoteFailureText'),
             cfg      = {
                 method: 'GET',
+                arguments: {
+                    dialog: dialog
+                },
                 on: {
-                    success: function(id, o) {
+                    success: function(id, o, args) {
+                        e.args = args;
+                        e.response = o;
+
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
                         fragment.append('<div>' + o.responseText + '</div>');
                         fragment = fragment.one('div');
@@ -115,10 +121,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
-                        e.preventDefault = function() { };
-                        callback(e);
+                        e.domTarget = e.currentTarget;
+
+                        dialog.fire('getSuccess', e);
                     },
-                    failure: function(id, o) {
+                    failure: function(id, o, args) {
+                        e.args = args;
+                        e.response = o;
+
                         var fragment = Y.one(Y.config.doc.createDocumentFragment());
                         fragment.append('<div>' + error + '</div>');
                         fragment = fragment.one('div');
@@ -128,9 +138,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
                         e.dialogId = target.get('id');
                         e.template = fragment;
-                        e.preventDefault = function() { };
+                        e.domTarget = e.currentTarget;
 
-                        callback(e);
+                        dialog.fire('getFailure', e);
                     }
                 }
             };
@@ -152,7 +162,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     _dialogFromNode: function(e) {
-        var target   = e.currentTarget,
+        var target   = e.domTarget ? e.domTarget : e.currentTarget,
             source   = target.get('tagName') === 'A' ?
                         target.get('href') : target.get('target'),
             attrs    = {},
@@ -165,7 +175,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             data_attrs = [];
 
         /* If we don't have a template, fetch it! */
-        if ( target.hasClass( this.REMOTE_CLASS ) && !template ) {
+        if ( target.hasClass( this.get('remoteClass') ) && !template ) {
             /* Now we pause. The contents of the dialog are not from the template
                but from an XHR call.
             */
@@ -239,7 +249,6 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             modal   = element.getAttribute('data-modal') || template.getAttribute('data-modal') || this.get('modal'),
             zIndex  = element.getAttribute('data-zindex') || this.get('zIndex'),
             panel   = null,
-            buttons = this.BUTTONS,
             async   = template.getAttribute('data-async') === 'true',
             submitFn   = Y.bind( this._defSubmitButtonFn, this ),
             closeLabel = this.get('closeLabel'),
@@ -272,14 +281,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         /* If we have a form, setup form buttons */
         if ( form ) {
             panel.addButton({
-                value: buttons.CANCEL,
+                value: this.get('cancelLabel'),
                 classNames: [ 'yui3-dynamic-dialog-cancel' ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
 
             panel.addButton({
-                value: buttons.SUBMIT,
+                value: this.get('submitLabel'),
                 classNames: [ 'yui3-dynamic-dialog-submit' ],
                 action: function(e) {
                     e.preventDefault();
@@ -302,7 +311,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         /* Otherwise, just a simple Hide button */
         else {
             panel.addButton({
-                value: buttons.OK,
+                value: this.get('okLabel'),
                 classNames: [ 'yui3-dynamic-dialog-ok' ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
@@ -310,6 +319,12 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         }
 
         /* How should we align? */
+        panel.on('visibleChange', function(e) {
+            this.fire('visibleChange', { 
+                event: e,
+                panel: panel
+            });
+        }, this);        
 
         this.panels[ '#' + template.get('id') ] = panel;
 
@@ -347,9 +362,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         cfg.form    = { id: form };
         cfg.context = this;
         cfg.arguments = {
-            dialog:  dialog,
-            form:    form,
-            trigger: trigger
+            dialog         : dialog,
+            form           : form,
+            trigger        : trigger,
+            preventDefault : e.preventDefault
         };
         cfg.on = {
             success: this._ioSuccess,
@@ -371,7 +387,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         var dialog    = args.dialog,
             form      = args.form,
             bounding  = dialog.get('boundingBox'),
-            className = this.IO_FAILURE_CLASS;
+            className = this.get('ioFailureClass');
 
         args.response = o;
         this.fire('ioFailure', args);
@@ -418,10 +434,17 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     }
 
 }, {
-    ATTRS: { 
-        modal       : { value: false },
-        zIndex      : { value: 1 },
-        closeLabel  : { value: "✕" }
+    ATTRS: {
+        modal             : { value: false },
+        zIndex            : { value: 1 },
+        closeLabel        : { value: "✕" },
+        okLabel           : { value: 'OK' },
+        cancelLabel       : { value: 'Cancel' },
+        submitLabel       : { value: 'Submit' },
+        remoteFailureText : { value: '<p>There was a problem fetching the dialog content. Sorry.</p>' },
+        dialogClass       : { value: 'open-dialog' },
+        remoteClass       : { value: 'remote-dialog' },
+        ioFailureClass    : { value: 'yui3-dynamic-dialog-io-failure' }
     }
 });
 
