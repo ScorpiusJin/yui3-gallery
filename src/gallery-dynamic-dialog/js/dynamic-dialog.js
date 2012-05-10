@@ -444,7 +444,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     ATTRS: {
         modal             : { value: false },
         zIndex            : { value: 1 },
-        closeLabel        : { value: "✕" },
+        closeLabel        : { value: "\u2715" },
         okLabel           : { value: 'OK' },
         cancelLabel       : { value: 'Cancel' },
         submitLabel       : { value: 'Submit' },
