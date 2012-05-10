@@ -272,6 +272,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         // XX The classes are based on the listed classes, but we want to add
         // this in. Didn't see a way via the API in Widget.js.
         panel.get('boundingBox').addClass('yui3-dynamic-dialog');
+        panel.get('boundingBox').addClass(template.getAttribute('data-dialog-class'));
 
         contentBox = panel.get('contentBox');
         form       = contentBox.one('form');
@@ -280,14 +281,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         if ( form ) {
             panel.addButton({
                 value: template.getAttribute('data-cancel-label') || this.get('cancelLabel'),
-                classNames: [ 'yui3-dynamic-dialog-cancel' ],
+                classNames: [ 'yui3-dynamic-dialog-cancel', template.getAttribute('data-cancel-class') ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
 
             panel.addButton({
                 value: template.getAttribute('data-submit-label') || this.get('submitLabel'),
-                classNames: [ 'yui3-dynamic-dialog-submit' ],
+                classNames: [ 'yui3-dynamic-dialog-submit', template.getAttribute('data-submit-class') ],
                 action: function(e) {
                     e.preventDefault();
                     e.async   = async;
@@ -310,7 +311,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         else {
             panel.addButton({
                 value: template.getAttribute('data-ok-label') || this.get('okLabel'),
-                classNames: [ 'yui3-dynamic-dialog-ok' ],
+                classNames: [ 'yui3-dynamic-dialog-ok', template.getAttribute('data-ok-class') ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
