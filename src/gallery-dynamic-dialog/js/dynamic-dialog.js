@@ -279,14 +279,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         /* If we have a form, setup form buttons */
         if ( form ) {
             panel.addButton({
-                value: this.get('cancelLabel'),
+                value: template.getAttribute('data-cancel-label') || this.get('cancelLabel'),
                 classNames: [ 'yui3-dynamic-dialog-cancel' ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
 
             panel.addButton({
-                value: this.get('submitLabel'),
+                value: template.getAttribute('data-submit-label') || this.get('submitLabel'),
                 classNames: [ 'yui3-dynamic-dialog-submit' ],
                 action: function(e) {
                     e.preventDefault();
@@ -309,7 +309,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         /* Otherwise, just a simple Hide button */
         else {
             panel.addButton({
-                value: this.get('okLabel'),
+                value: template.getAttribute('data-ok-label') || this.get('okLabel'),
                 classNames: [ 'yui3-dynamic-dialog-ok' ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
