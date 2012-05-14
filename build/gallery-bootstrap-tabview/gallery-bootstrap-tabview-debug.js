@@ -35,7 +35,7 @@ var NS  = Y.namespace('Bootstrap'),
     
     sub = Y.Lang.sub;
 
-NS.Tabview = Y.Base.create('bootstrapTabView', Y.TabviewBase, [ ], {
+NS.TabView = Y.Base.create('bootstrapTabView', Y.TabviewBase, [ ], {
     _queries      : {
                         tabview      : DOT + 'nav-tabs',
                         tabviewList  : '> ul',
@@ -131,11 +131,44 @@ NS.Tabview = Y.Base.create('bootstrapTabView', Y.TabviewBase, [ ], {
         );
     },
 
+    initClassNames: function(index) {
+        var queries    = this._queries,
+            classNames = this._classNames;
+
+        Y.Object.each(queries, function(query, name) {
+            // this === tabview._node
+            if (classNames[name]) {
+                var result = this.all(query);
+                
+                if (index !== undefined) {
+                    result = result.item(index);
+                }
+
+                if (result) {
+                    result.addClass(classNames[name]);
+                }
+            }
+        }, this._node);
+
+        this._node.addClass(classNames.tabview);
+    },
+
     onTabEvent: function(e) {
-        Y.log('onTabEvent: ' + this._queries.tab);
-        Y.log(this._node.all(this._queries.tab));
         e.preventDefault();
-        this._select(this._node.all(this._queries.tab).indexOf(e.currentTarget));
+        var index = -1,
+            node,
+            href = e.target.get('href');
+
+        if ( href && href.indexOf('#') >= 0 ) {
+            node  = this._node.one(href.substr( href.indexOf('#')));
+            index = this._node.all( this._queries.tabPanel ).indexOf(node);
+        }
+
+        if ( index === -1 ) {
+            index = this._node.all(this._queries.tab).indexOf(e.currentTarget);
+        }
+
+        this._select( index );
     },
 
     _select: function(index) {
@@ -147,17 +180,13 @@ NS.Tabview = Y.Base.create('bootstrapTabView', Y.TabviewBase, [ ], {
             newItem = node.all(_queries.tab).item(index),
             newContent = node.all(_queries.tabPanel).item(index);
 
-        Y.log(this._queries);
-        Y.log('oldiTem: ' + oldItem);
-        Y.log('newItem: ' + newItem);
-        Y.log('removeClass:' + _classNames.selectedTab);
-        Y.log('addClass:' + _classNames.selectedTab);
         if (oldItem) {
             oldItem.removeClass(_classNames.selectedTab);
         }
 
         if (oldContent) {
             oldContent.removeClass(_classNames.selectedPanel);
+            oldContent.removeClass('in');
         }
 
         if (newItem) {
@@ -166,6 +195,7 @@ NS.Tabview = Y.Base.create('bootstrapTabView', Y.TabviewBase, [ ], {
 
         if (newContent) {
             newContent.addClass(_classNames.selectedPanel);
+            newContent.addClass('in');
         }
     },
 

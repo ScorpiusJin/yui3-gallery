@@ -111,11 +111,13 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
             addClass    = method === 'hide' ? config.hideClass : config.showClass,
 
             to_height   = method === 'hide' ? 0 : null,
+            event       = method === 'hide' ? 'hidden' : 'shown',
 
             complete = function() {
                 node.removeClass(removeClass);
                 node.addClass(addClass);
                 self.transitioning = false;
+                this.fire( event );
             };
 
         if ( to_height === null ) {

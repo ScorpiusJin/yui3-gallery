@@ -36,6 +36,10 @@ NS.initializer = function(e) {
     NS.expandable_delegation();
 
     Y.all('*[data-provide=typeahead]').plug( NS.Typeahead );
+
+    Y.all('*[data-toggle=tab]').each( function(node) {
+        new NS.TabView({ node: node })
+    } );
 };
 
 Y.on('domready', NS.initializer);
