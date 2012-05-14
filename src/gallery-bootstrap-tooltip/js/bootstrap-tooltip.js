@@ -167,7 +167,7 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
         trigger   : { value : 'hover' },
         title     : { value : '' },
         delay     : { value : 0 },
-        visible   : { value : false },
+        visible   : { value : false }
     }
 });
 
