@@ -270,4 +270,4 @@ Y.extend(BootstrapEngine, Y.Base, {
 Y.BootstrapEngine = BootstrapEngine;
 
 
-}, 'gallery-2011.10.27-17-03' ,{requires:['node','base-base']});
+}, '@VERSION@' ,{requires:['node','base-base']});
