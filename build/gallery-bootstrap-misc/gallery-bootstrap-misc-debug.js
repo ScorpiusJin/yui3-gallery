@@ -80,7 +80,7 @@ var NS = Y.namespace('Bootstrap');
 
 NS._dismissAlertFn = function(e) {
     var target   = e.target,
-        selector = target.getAttribute('data-dismiss') || 'alert',
+        selector = target.getData('dismiss') || 'alert',
         alert    = e.target.ancestor('div.' + selector);
 
     if ( alert ) {
@@ -101,7 +101,7 @@ NS._dismissAlertFn = function(e) {
 
 NS.alert_delegation = function(selector) {
     if ( typeof selector === 'undefined' ) {
-        selector = '*[data-dismiss]';
+        selector = '*[data-dismiss=alert]';
     }
     Y.delegate('click', NS._dismissAlertFn, document.body, selector);
 };
@@ -431,6 +431,234 @@ TypeaheadPlugin.prototype = {
 
 NS.Typeahead = TypeaheadPlugin;
 
+function CarouselPlugin(config) {
+    CarouselPlugin.superclass.constructor.apply(this, arguments);
+}
+
+CarouselPlugin.NAME = 'Bootstrap.Carousel';
+CarouselPlugin.NS   = 'carousel';
+
+Y.extend(CarouselPlugin, Y.Plugin.Base, {
+    defaults : {
+        interval  : 0.25,
+        pause     : 'hover',
+       
+        pageSelector : '.item',
+        prevSelector : '*[data-slide=prev]',
+        nextSelector : '*[data-slide=next]'
+    },
+
+    initializer : function(config) {
+        this._node  = config.host;
+
+        this.config = Y.mix( config, this.defaults );
+
+        this.publish('slide', { preventable : true, defaultFn : this.show });
+        this.publish('slid',  { preventable : false });
+
+        this.scrollView = new Y.ScrollView({
+            srcNode : this._node
+        })
+            .plug( Y.Plugin.ScrollViewPaginator, { selector : this.config.pageSelector } )
+            .render();
+    },
+
+    cycle : function() {
+    },
+
+    pause : function() {
+
+    },
+
+    number : function(index) {
+
+    },
+
+    prev : function() {
+        Y.log('prev');
+        this.scrollView.pages.prev();
+    },
+
+    next : function() {
+        Y.log('next');
+        this.scrollView.pages.next();
+    }
+});
+
+/*
+  $(function () {
+    $('body').on('click.carousel.data-api', '[data-slide]', function ( e ) {
+      var $this = $(this), href
+        , $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
+        , options = !$target.data('modal') && $.extend({}, $target.data(), $this.data())
+      $target.carousel(options)
+      e.preventDefault()
+    })
+  })
+*/
+NS.Carousel = CarouselPlugin;
 
 
-}, '@VERSION@' ,{requires:['anim','transition','widget','event','event-outside','event-delegate','autocomplete','autocomplete-filters','autocomplete-highlighters','json']});
+var CONTENT_BOX   = 'contentBox',
+    BOUNDING_BOX  = 'boundingBox',
+    HIDDEN_CLASS  = 'hide',
+    SHOWING_CLASS = 'in',
+    HEADER        = 'header',
+    BODY          = 'body',
+    FOOTER        = 'footer',
+    PREFIX        = 'modal-',
+
+BootstrapPanel = Y.Base.create('BootstrapPanel', Y.Panel, [],
+    {
+        show: function() {
+            this.get(CONTENT_BOX).removeClass( HIDDEN_CLASS );
+            this.get(CONTENT_BOX).addClass( SHOWING_CLASS );
+            this.set('visible', true);
+        },
+
+        hide: function() {
+            this.get(CONTENT_BOX).addClass( HIDDEN_CLASS );
+            this.get(CONTENT_BOX).removeClass( SHOWING_CLASS );
+            this.set('visible', false);
+        },
+
+        _findStdModSection: function(section) {
+            Y.log('Finding content section: ' + section);
+            var node = this.get(CONTENT_BOX).one("> ." + PREFIX + section);
+            Y.log(node);
+            return node;
+        },
+        _uiSetDefaultButton: function (newButton, oldButton) {
+            var primaryClassName = this.CLASS_NAMES.primary;
+            Y.log('_uiSetDefaultButton: ' + primaryClassName); 
+            newButton && newButton.addClass(primaryClassName);
+            oldButton && oldButton.removeClass(primaryClassName);
+        }
+    },
+    {
+        HTML_PARSER : {
+            headerContent : function(contentBox) {
+                Y.log('parse header: ' + HEADER);
+                return this._parseStdModHTML( HEADER );
+            },
+            bodyContent : function(contentBox) {
+                return this._parseStdModHTML( BODY );
+            },
+            footerContent : function(contentBox) {
+                return this._parseStdModHTML( FOOTER );
+            },
+            buttons : function(srcNode) {
+                var buttonSelector = 'button,.btn',
+                    sections       = [ 'header', 'body', 'footer' ],
+                    buttonsConfig  = null;
+                Y.Array.each( sections, function(section) {
+                    Y.log('Finding buttons in ' + section);
+                    var container = this.get(CONTENT_BOX).one('.' + PREFIX + section),
+                        buttons   = container && container.all(buttonSelector),
+                        sectionButtons;
+                    Y.log(container);
+                    Y.log(buttons);
+                    if ( !buttons || buttons.isEmpty() ) { return; }
+
+                    sectionButtons = [];
+                    Y.log(this.get('classNames'));
+                    buttons.each( function(button) {
+                        Y.log(button.get('className'));
+                        sectionButtons.push({ srcNode: button });
+                    });
+                    buttonsConfig || ( buttonsConfig = {} );
+                    buttonsConfig[section] = sectionButtons;
+                }, this);
+
+                return buttonsConfig;
+            }
+        },
+
+        SECTION_CLASS_NAMES : {
+            header : PREFIX + HEADER,
+            body   : PREFIX + BODY,
+            footer : PREFIX + FOOTER
+        },
+
+        CLASS_NAMES : {
+            button  : 'btn',
+            primary : 'btn-primary'
+        },
+
+        TEMPLATES : {
+            header : '<div class="' + PREFIX + HEADER + '"></div>',
+            body   : '<div class="' + PREFIX + BODY + '"></div>',
+            footer : '<div class="' + PREFIX + FOOTER + '"></div>'
+        }
+    }
+);
+
+function ModalPlugin(config) {
+    ModalPlugin.superclass.constructor.apply(this, arguments);
+}
+
+ModalPlugin.NAME = 'Bootstrap.Modal';
+ModalPlugin.NS   = 'modal';
+
+Y.extend(ModalPlugin, Y.Plugin.Base, {
+    defaults : {
+        backdrop  : 'static',
+        keyboard  : true,
+        modal     : true,
+        rendered  : true,
+        show      : true,
+        hideOn    : [
+            { eventName : 'clickoutside' }
+        ]
+    },
+
+    initializer : function(config) {
+        this._node = config.host;
+
+        this.config = Y.mix( config, this.defaults );
+
+        this.publish('show', { preventable : true, defaultFn : this.show });
+        this.publish('hide', { preventable : true, defaultFn : this.hide });
+
+        this.config.srcNode = this._node;
+        this.config.visible = this.config.show;
+        this.config.rendered = this.config.rendered;
+
+        var oldClass = Y.ButtonCore.CLASS_NAMES.BUTTON;
+        Y.ButtonCore.CLASS_NAMES.BUTTON = 'btn';
+        var panel = this.panel = new BootstrapPanel(this.config);
+        Y.ButtonCore.CLASS_NAMES.BUTTON = oldClass;
+
+        panel.get('contentBox').delegate('click',
+            function(e) {
+                var target = e.currentTarget,
+                    action = target.getData('dismiss');
+                if ( action && action === 'modal' ) {
+                    e.preventDefault();
+                    this.fire('hide');
+                }
+            },
+            '.btn', this
+        );
+
+        if ( this.config.show ) {
+            this.fire('show');
+        }
+    },
+
+    /* Add open and close methods */
+    hide: function() {
+        Y.log('hide that panel, all day long.');
+        this.panel.hide();
+    },
+
+    show: function() {
+        this.panel.show();
+    }
+});
+
+NS.ModalPlugin = ModalPlugin;
+
+
+
+}, '@VERSION@' ,{requires:['panel','anim','transition','widget','event','event-outside','event-delegate','autocomplete','autocomplete-filters','autocomplete-highlighters','json','scrollview','scrollview-paginator']});

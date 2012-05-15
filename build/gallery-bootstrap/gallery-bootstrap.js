@@ -29,7 +29,7 @@ var NS = Y.namespace('Bootstrap');
 
 NS.initializer = function(e) {
 
-    new NS.Tooltip({ selector : '*[rel=tooltip]' });
+    var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
 
     NS.dropdown_delegation();
     NS.alert_delegation();
@@ -38,8 +38,69 @@ NS.initializer = function(e) {
     Y.all('*[data-provide=typeahead]').plug( NS.Typeahead );
 
     Y.all('*[data-toggle=tab]').each( function(node) {
-        new NS.TabView({ node: node })
+        var tabview = new NS.TabView({ node: node });
     } );
+
+    Y.one('body').delegate(
+        'click',
+        function(e) {
+            var target    = e.currentTarget,
+                options   = target.getData(),
+                direction = options.slide,
+                carousel_id,
+                carousel;
+
+            carousel_id = Y.one( this.getData('target') );
+            if ( !carousel_id ) {
+                carousel_id = this.get('href');
+                if ( carousel_id ) {
+                    carousel_id = carousel_id.replace(/.*(?=#[^\s]+$)/, '');
+                    carousel = Y.one( carousel_id );
+                }
+            }
+            if ( carousel ) {
+                // Only prevent if there is actually a carousel
+                e.preventDefault();
+
+                if ( ! carousel.carousel ) {
+                    carousel.plug( NS.Carousel, options );
+                }
+                carousel.carousel[direction]();
+            }
+        },
+        '*[data-slide]'
+    );
+
+    Y.one('body').delegate(
+        'click',
+        function(e) {
+            var target    = e.currentTarget,
+                options   = target.getData(),
+                id,
+                node,
+
+                type = 'modal';
+
+            id = Y.one( this.getData('target') );
+            if ( !id ) {
+                id = this.get('href');
+                if ( id ) {
+                    id = id.replace(/.*(?=#[^\s]+$)/, '');
+                    node = Y.one( id );
+                }
+            }
+            if ( node ) {
+                // Only prevent if there is actually a carousel
+                e.preventDefault();
+
+                if ( ! node[type] ) {
+                    node.plug( NS.ModalPlugin, options );
+                }
+                node[type].show();
+            }
+        },
+        '*[data-toggle=modal]'
+    );
 };
 
 Y.on('domready', NS.initializer);

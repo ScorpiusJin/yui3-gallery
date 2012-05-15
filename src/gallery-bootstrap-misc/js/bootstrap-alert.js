@@ -1,6 +1,6 @@
 NS._dismissAlertFn = function(e) {
     var target   = e.target,
-        selector = target.getAttribute('data-dismiss') || 'alert',
+        selector = target.getData('dismiss') || 'alert',
         alert    = e.target.ancestor('div.' + selector);
 
     if ( alert ) {
@@ -21,7 +21,7 @@ NS._dismissAlertFn = function(e) {
 
 NS.alert_delegation = function(selector) {
     if ( typeof selector === 'undefined' ) {
-        selector = '*[data-dismiss]';
+        selector = '*[data-dismiss=alert]';
     }
     Y.delegate('click', NS._dismissAlertFn, document.body, selector);
 };
