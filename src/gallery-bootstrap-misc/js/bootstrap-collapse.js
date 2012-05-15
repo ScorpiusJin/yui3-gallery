@@ -46,8 +46,8 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
 
     /* Add open and close methods */
     hide: function() {
-        var showClass = this.showClass,
-            hideClass = this.hideClass,
+        var showClass = this.config.showClass,
+            hideClass = this.config.hideClass,
             node      = this._getTarget();
 
         if ( this.transitioning ) {
@@ -60,8 +60,8 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
     },
 
     show: function() {
-        var showClass = this.showClass,
-            hideClass = this.hideClass,
+        var showClass = this.config.showClass,
+            hideClass = this.config.hideClass,
             node      = this._getTarget(),
             host      = this._node,
             self      = this,
@@ -93,7 +93,7 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
 
         var target = this._getTarget();
 
-        if ( target.hasClass( this.showClass ) ) {
+        if ( target.hasClass( this.config.showClass ) ) {
             this.fire('hide');
         } else {
             this.fire('show');

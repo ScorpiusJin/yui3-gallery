@@ -237,8 +237,8 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
 
     /* Add open and close methods */
     hide: function() {
-        var showClass = this.showClass,
-            hideClass = this.hideClass,
+        var showClass = this.config.showClass,
+            hideClass = this.config.hideClass,
             node      = this._getTarget();
 
         if ( this.transitioning ) {
@@ -251,8 +251,8 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
     },
 
     show: function() {
-        var showClass = this.showClass,
-            hideClass = this.hideClass,
+        var showClass = this.config.showClass,
+            hideClass = this.config.hideClass,
             node      = this._getTarget(),
             host      = this._node,
             self      = this,
@@ -281,7 +281,7 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
 
         var target = this._getTarget();
 
-        if ( target.hasClass( this.showClass ) ) {
+        if ( target.hasClass( this.config.showClass ) ) {
             this.fire('hide');
         } else {
             this.fire('show');
@@ -424,72 +424,6 @@ TypeaheadPlugin.prototype = {
 };
 
 NS.Typeahead = TypeaheadPlugin;
-
-function CarouselPlugin(config) {
-    CarouselPlugin.superclass.constructor.apply(this, arguments);
-}
-
-CarouselPlugin.NAME = 'Bootstrap.Carousel';
-CarouselPlugin.NS   = 'carousel';
-
-Y.extend(CarouselPlugin, Y.Plugin.Base, {
-    defaults : {
-        interval  : 0.25,
-        pause     : 'hover',
-       
-        pageSelector : '.item',
-        prevSelector : '*[data-slide=prev]',
-        nextSelector : '*[data-slide=next]'
-    },
-
-    initializer : function(config) {
-        this._node  = config.host;
-
-        this.config = Y.mix( config, this.defaults );
-
-        this.publish('slide', { preventable : true, defaultFn : this.show });
-        this.publish('slid',  { preventable : false });
-
-        this.scrollView = new Y.ScrollView({
-            srcNode : this._node
-        })
-            .plug( Y.Plugin.ScrollViewPaginator, { selector : this.config.pageSelector } )
-            .render();
-    },
-
-    cycle : function() {
-    },
-
-    pause : function() {
-
-    },
-
-    number : function(index) {
-
-    },
-
-    prev : function() {
-        this.scrollView.pages.prev();
-    },
-
-    next : function() {
-        this.scrollView.pages.next();
-    }
-});
-
-/*
-  $(function () {
-    $('body').on('click.carousel.data-api', '[data-slide]', function ( e ) {
-      var $this = $(this), href
-        , $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
-        , options = !$target.data('modal') && $.extend({}, $target.data(), $this.data())
-      $target.carousel(options)
-      e.preventDefault()
-    })
-  })
-*/
-NS.Carousel = CarouselPlugin;
-
 
 var CONTENT_BOX   = 'contentBox',
     BOUNDING_BOX  = 'boundingBox',
@@ -643,4 +577,4 @@ NS.ModalPlugin = ModalPlugin;
 
 
 
-}, '@VERSION@' ,{requires:['panel','anim','transition','widget','event','event-outside','event-delegate','autocomplete','autocomplete-filters','autocomplete-highlighters','json','scrollview','scrollview-paginator']});
+}, '@VERSION@' ,{requires:['panel','anim','transition','widget','event','event-outside','event-delegate','autocomplete','autocomplete-filters','autocomplete-highlighters','json']});
