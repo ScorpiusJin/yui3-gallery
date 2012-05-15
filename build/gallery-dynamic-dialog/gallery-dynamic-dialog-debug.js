@@ -462,4 +462,4 @@ Y.DynamicDialog = DynamicDialog;
 
 
 
-}, '@VERSION@' ,{requires:['anim','substitute','widget','base','panel','io','io-form','event-delegate'], optional:['anim','substitute','widget','base','panel','io','io-form','event-delegate'], supersedes:['anim','substitute','widget','base','panel','io','io-form','event-delegate']});
+}, '' , { requires: ['anim', 'substitute', 'widget', 'base', 'panel', 'io', 'io-form', 'event-delegate'] });
