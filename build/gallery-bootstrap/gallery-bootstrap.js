@@ -94,7 +94,7 @@ NS.initializer = function(e) {
                 e.preventDefault();
 
                 if ( ! node[type] ) {
-                    node.plug( NS.ModalPlugin, options );
+                    node.plug( NS.Modal, options );
                 }
                 node[type].show();
             }

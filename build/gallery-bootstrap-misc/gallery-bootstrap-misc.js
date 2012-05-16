@@ -573,7 +573,7 @@ Y.extend(ModalPlugin, Y.Plugin.Base, {
     }
 });
 
-NS.ModalPlugin = ModalPlugin;
+NS.Modal = ModalPlugin;
 
 
 
