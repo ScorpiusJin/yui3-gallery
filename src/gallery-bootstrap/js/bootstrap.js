@@ -143,7 +143,7 @@ NS.alert_delegation = function(selector) {
     }
     // Don't bother plugging things in if we don't need to. Simply delegating
     // click events with data-dismiss and reaching into the class will work.
-    Y.delegate('click', AlertPlugin.prototype._dismissAlertFn, document.body, selector);
+    Y.delegate('click', Y.Bootstrap.Alert.prototype._dismissAlertFn, document.body, selector);
 };
 
 /**
@@ -158,7 +158,7 @@ NS.expandable_delegation = function() {
 
         var target = e.currentTarget;
         if ( ! target.collapse ) {
-            target.plug( ExpandablePlugin );
+            target.plug( Y.Bootstrap.Collapse );
         }
         target.collapse.toggle();
     }, document.body, '*[data-toggle=collapse]' );
