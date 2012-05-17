@@ -30,8 +30,8 @@ BootstrapPanel = Y.Base.create('BootstrapPanel', Y.Panel, [],
         _uiSetDefaultButton: function (newButton, oldButton) {
             var primaryClassName = this.CLASS_NAMES.primary;
             Y.log('_uiSetDefaultButton: ' + primaryClassName); 
-            newButton && newButton.addClass(primaryClassName);
-            oldButton && oldButton.removeClass(primaryClassName);
+            if ( newButton ) { newButton.addClass(primaryClassName); }
+            if ( oldButton ) { oldButton.removeClass(primaryClassName); }
         }
     },
     {

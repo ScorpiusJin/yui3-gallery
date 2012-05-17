@@ -30,7 +30,7 @@ var NS = Y.namespace('Bootstrap');
 NS.initializer = function(e) {
     Y.log('initializer!');
 
-    var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
+    //var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
 
     NS.dropdown_delegation();
     NS.alert_delegation();
