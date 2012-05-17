@@ -32,7 +32,25 @@ function AlertPlugin(config) {
     this._node.delegate('click', NS._dismissAlertFn, selector);
 }
 
+<<<<<<< Updated upstream
 AlertPlugin.NS = 'alert';
+=======
+AlertPlugin.NAME = 'Bootstrap.Alert';
+AlertPlugin.NS   = 'alert';
+
+Y.extend(AlertPlugin, Y.Plugin.Base, {
+    /**
+    @property defaults
+    @type Object
+    @default { duration : 0.5, selector : '.close', transition : true, destroy : true }
+    **/
+    defaults : {
+        duration     : 0.5,
+        selector     : '.close',
+        transition   : true,
+        destroy      : true
+    },
+>>>>>>> Stashed changes
 
 AlertPlugin.prototype = {
     /* Add a dismiss entry as well */
