@@ -5,7 +5,6 @@ YUI.add('gallery-bootstrap-tooltip', function(Y) {
 This is a drop-in for the Twitter Bootstrap tooltips, so you don't have to
 schlep in jQuery.
 
-
 @module gallery-bootstrap-tooltip
 **/
 
@@ -18,17 +17,21 @@ information.
 
 You will need to include the Bootstrap CSS. This is only the JavaScript.
 
-@example
-
-  new Y.Bootstrap.Tooltip();
-
 There are selectors you can use to narrow down and implement several tooltips
 at once. The most sensible example is to match any link with a `rel="tooltip"`
 attribute.
 
-  new Y.Bootstrap.Tooltip({ selector : '*[rel=tooltip]' });
+    YUI().use('gallery-bootstrap-tooltip', function(Y) {
+        var tooltipManager = new Y.Bootstrap.Tooltip({ selector : '*[rel=tooltip]' });
+    });
 
 @class Bootstrap.Tooltip
+@constructor
+@extends Widget
+@uses WidgetPosition
+@uses WidgetStack
+@uses WidgetPositionAlign
+@uses WidgetPositionConstrain
 **/
 
 var NS = Y.namespace('Bootstrap');
@@ -160,12 +163,65 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
     }
 }, {
     ATTRS: {
+        /**
+        Whether or not to animate the display of the tooltip
+
+        @attribute animation
+        @default true
+        @type boolean
+        **/
         animation : { value : true },
+        /**
+        Where to place the tooltip. Valid values are top, bottom, left or right.
+
+        @attribute placement
+        @default top
+        @type String
+        **/
         placement : { value : 'top' },
+        /**
+        Selector to listen to. Defaults to false, and attaches no
+        delegation events. Set to a valid selector and any event will
+        fire it.
+
+        @attribute selector
+        @default false
+        @type String | boolean
+        **/
         selector  : { value : false },
+        /**
+        What event to listen for. This must be an event that
+        bubbles. Hover or click will work as expected.
+
+        @attribute trigger
+        @default hover
+        @type String
+        **/
         trigger   : { value : 'hover' },
+        /**
+        The content of the tooltip to display. This is updated each time the
+        event is triggered. Set by the <code>setContent</code> method.
+
+        @attribute title
+        @default ''
+        @type String
+        **/
         title     : { value : '' },
+        /**
+        Delay in hiding and showing the tooltip.
+
+        @attribute delay
+        @default 0
+        @type Number
+        **/
         delay     : { value : 0 },
+        /**
+        Attribute to show if the tooltip is visible or not.
+
+        @attribute visible
+        @default false
+        @type boolean
+        **/
         visible   : { value : false }
     }
 });

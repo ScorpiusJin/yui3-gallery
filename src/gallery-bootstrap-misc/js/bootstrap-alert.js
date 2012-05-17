@@ -12,8 +12,6 @@ and markup from Twitter's Bootstrap project.
 This makes it possible to have dynamic behaviors without incorporating any
 JavaScript. However, it can be manually plugged into any node or node list.
 
-@example
-
     var node = Y.one('.someNode');
     // Duration is in seconds
     node.plug( Y.Bootstrap.Alert, { duration : 5 } );

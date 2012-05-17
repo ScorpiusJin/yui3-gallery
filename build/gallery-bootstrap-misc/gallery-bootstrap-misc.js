@@ -9,46 +9,7 @@ full module, we have Bootstrap Misc!
 **/
 
 /**
-Twitter's Bootstrap is a great starting place and has many convenient
-JavaScript behaviors. The only problem is that they use jQuery. Worry
-no more, as you can use this for all small controls and if you need the
-larger controls, you have the option of using `gallery-bootstrap` or the
-other individual pieces:
-
- * `gallery-bootstrap-tooltip`
- * `gallery-bootstrap-tabview`
- * `gallery-bootstrap-scrollspy`
-
-See http://twitter.github.com/bootstrap/javascript.html for more
-information.
-
-You will need to include the Bootstrap CSS. This is only the JavaScript.
-
-Note that we do not do anything with Overlays (or "Modals") as the Y.Panel
-is featurefull enough with some css additions.  Also make sure to add
-'btn' and 'btn-primary' classes to your `buttons` and everything will be
-grand!
-
-@example
-
-    // You can plugin the Alert
-    Y.all('div.alert').plug( Y.Bootstrap.Alert );
-
-    // Or setup delegation:
-    Y.Bootstrap.alert_delegation();
-
-    // Also a JS method to dismiss
-    var node = Y.one('div.alert');
-    node.plug( Y.Bootstrap.Alert );
-    node.alert.dismiss();
-
-There are selectors you can use to narrow down and implement several tooltips
-at once. The most sensible example is to match any link with a `rel="tooltip"`
-attribute.
-
-  new Y.Bootstrap.Tooltip({ selector : '*[rel=tooltip]' });
-
-@class Bootstrap.Tooltip
+@class Bootstrap
 **/
 
 // We must extend Y.Widget to have extra class names.
@@ -92,8 +53,6 @@ and markup from Twitter's Bootstrap project.
 This makes it possible to have dynamic behaviors without incorporating any
 JavaScript. However, it can be manually plugged into any node or node list.
 
-@example
-
     var node = Y.one('.someNode');
     // Duration is in seconds
     node.plug( Y.Bootstrap.Alert, { duration : 5 } );
@@ -124,10 +83,16 @@ function AlertPlugin(config) {
     this._node.delegate('click', function(e) { this.fire('close'); }, selector, this);
 }
 
+
 AlertPlugin.NAME = 'Bootstrap.Alert';
 AlertPlugin.NS   = 'alert';
 
 Y.extend(AlertPlugin, Y.Plugin.Base, {
+    /**
+    @property defaults
+    @type Object
+    @default { duration : 0.5, selector : '.close', transition : true, destroy : true }
+    **/
     defaults : {
         duration     : 0.5,
         selector     : '.close',

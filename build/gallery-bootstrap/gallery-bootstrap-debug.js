@@ -9,18 +9,45 @@ Twitter Bootstrap components.
 **/
 
 /**
-Twitter Bootstrap is a nice scaffolding for building applications that
-function well and consistently, without needing to do a lot
-yourself. This module handles that, and doesn't require any JavaScript.
+Twitter's Bootstrap is a great starting place and has many convenient
+JavaScript behaviors. The only problem is that they use jQuery. Worry
+no more, as you can use this for all small controls and if you need the
+larger controls, you have the option of using `gallery-bootstrap` or the
+other individual pieces:
+
+ * `gallery-bootstrap-tooltip`
+ * `gallery-bootstrap-tabview`
+ * `gallery-bootstrap-scrollspy`
 
 See http://jshirley.github.com/bootstrap/javascript.html for more
 information on this fork.
 
 You will need to include the Bootstrap CSS. This is only the JavaScript.
 
-@example
-
     YUI().use('gallery-bootstrap');
+
+See http://twitter.github.com/bootstrap/javascript.html for more
+information.
+
+Everything works through Plugins or through delegation through selectors
+on the document.
+
+    // You can plugin the Alert
+    Y.all('div.alert').plug( Y.Bootstrap.Alert );
+
+    // Or setup delegation:
+    Y.Bootstrap.alert_delegation();
+
+    // Also a JS method to dismiss
+    var node = Y.one('div.alert');
+    node.plug( Y.Bootstrap.Alert );
+    node.alert.dismiss();
+
+There are selectors you can use to narrow down and implement several tooltips
+at once. The most sensible example is to match any link with a `rel="tooltip"`
+attribute.
+
+    new Y.Bootstrap.Tooltip({ selector : '*[rel=tooltip]' });
 
 @class Bootstrap
 **/
@@ -29,8 +56,6 @@ var NS = Y.namespace('Bootstrap');
 
 NS.initializer = function(e) {
     Y.log('initializer!');
-
-    //var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
 
     NS.dropdown_delegation();
     NS.alert_delegation();
