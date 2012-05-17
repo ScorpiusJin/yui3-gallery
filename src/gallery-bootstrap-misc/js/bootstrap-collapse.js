@@ -1,3 +1,29 @@
+/**
+A Plugin which provides Expandable behaviors on a Node with compatible syntax
+and markup from Twitter's Bootstrap project.
+
+@module gallery-bootstrap-expandable
+**/
+
+/**
+A Plugin which provides Expandable behaviors on a Node with compatible syntax
+and markup from Twitter's Bootstrap project.
+
+It possible to have dynamic behaviors without incorporating any
+JavaScript by setting <code>data-toggle=collapse</code> on any element.
+
+However, it can be manually plugged into any node or node list.
+
+@example
+
+    var node = Y.one('.someNode');
+    node.plug( Y.Bootstrap.Collapse, config );
+
+    node.collapse.show();
+
+@class Bootstrap.Collapse
+**/
+
 function ExpandablePlugin(config) {
     ExpandablePlugin.superclass.constructor.apply(this, arguments);
 }
@@ -44,7 +70,11 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
         return container;
     },
 
-    /* Add open and close methods */
+    /**
+    * @method hide
+    * @description Hide the collapsible target, specified by the host's
+    * <code>data-target</code> or <code>href</code> attribute.
+    */
     hide: function() {
         var showClass = this.config.showClass,
             hideClass = this.config.hideClass,
@@ -59,6 +89,11 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
         }
     },
 
+    /**
+    * @method show
+    * @description Show the collapsible target, specified by the host's
+    * <code>data-target</code> or <code>href</code> attribute.
+    */
     show: function() {
         var showClass = this.config.showClass,
             hideClass = this.config.hideClass,
@@ -86,6 +121,12 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
         this._showElement(node);
     },
 
+    /**
+    @method toggle
+    @description Toggle the state of the collapsible target, specified
+    by the host's <code>data-target</code> or <code>href</code>
+    attribute. Calls the <code>show</code> or <code>hide</code> method.
+    **/
     toggle : function(e) {
         if ( e && Y.Lang.isFunction(e.preventDefault) ) {
             e.preventDefault();
@@ -99,8 +140,15 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
             this.fire('show');
         }
     },
-    
-    transition : function(node, method, startEvent, completeEvent) {
+
+    /**
+    @method _transition
+    @description Handles the transition between showing and hiding.
+    @protected
+    @param node {Node} node to apply transitions to
+    @param method {String} 'hide' or 'show'
+    **/
+    _transition : function(node, method) {
         var self        = this,
             config      = this.config,
             duration    = config.duration,
@@ -136,8 +184,14 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
         }, complete);
     },
 
+    /**
+    @method _hideElement
+    @description Calls the <code>_transition</code> method to hide a node.
+    @protected
+    @param node {Node} node to hide.
+    **/
     _hideElement : function(node) {
-        this.transition(node, 'hide');
+        this._transition(node, 'hide');
 /*
         var showClass = this.showClass,
             hideClass = this.hideClass;
@@ -147,8 +201,14 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
 */
     },
 
+    /**
+    @method _showElement
+    @description Calls the <code>_transition</code> method to show a node.
+    @protected
+    @param node {Node} node to show.
+    **/
     _showElement : function(node) {
-        this.transition(node, 'show');
+        this._transition(node, 'show');
 /*
         var showClass = this.showClass,
             hideClass = this.hideClass;
@@ -158,6 +218,17 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
     }
 });
 
+/**
+@class Bootstrap
+
+**/
+
+/**
+@method expandable_delegation
+@description Setup delegation behaviors on all the nodes with
+<code>data-toggle=collapse</code> attributes.
+@static
+**/
 NS.expandable_delegation = function() {
     Y.delegate('click', function(e) {
         e.preventDefault();
