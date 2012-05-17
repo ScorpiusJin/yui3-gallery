@@ -9,20 +9,48 @@ Twitter Bootstrap components.
 **/
 
 /**
-Twitter Bootstrap is a nice scaffolding for building applications that
-function well and consistently, without needing to do a lot
-yourself. This module handles that, and doesn't require any JavaScript.
+Twitter's Bootstrap is a great starting place and has many convenient
+JavaScript behaviors. The only problem is that they use jQuery. Worry
+no more, as you can use this for all small controls and if you need the
+larger controls, you have the option of using `gallery-bootstrap` or the
+other individual pieces:
+
+ * `gallery-bootstrap-tooltip`
+ * `gallery-bootstrap-tabview`
+ * `gallery-bootstrap-scrollspy`
 
 See http://jshirley.github.com/bootstrap/javascript.html for more
 information on this fork.
 
 You will need to include the Bootstrap CSS. This is only the JavaScript.
 
-@example
-
     YUI().use('gallery-bootstrap');
 
+See http://twitter.github.com/bootstrap/javascript.html for more
+information.
+
+Everything works through Plugins or through delegation through selectors
+on the document.
+
+    // You can plugin the Alert
+    Y.all('div.alert').plug( Y.Bootstrap.Alert );
+
+    // Or setup delegation:
+    Y.Bootstrap.alert_delegation();
+
+    // Also a JS method to dismiss
+    var node = Y.one('div.alert');
+    node.plug( Y.Bootstrap.Alert );
+    node.alert.dismiss();
+
+There are selectors you can use to narrow down and implement several tooltips
+at once. The most sensible example is to match any link with a `rel="tooltip"`
+attribute.
+
+    new Y.Bootstrap.Tooltip({ selector : '*[rel=tooltip]' });
+
 @class Bootstrap
+@static
 **/
 
 var NS = Y.namespace('Bootstrap');
@@ -30,8 +58,11 @@ var NS = Y.namespace('Bootstrap');
 NS.initializer = function(e) {
     Y.log('initializer!');
 
+<<<<<<< HEAD
     //var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
 
+=======
+>>>>>>> gallery-bootstrap
     NS.dropdown_delegation();
     NS.alert_delegation();
     NS.expandable_delegation();
@@ -106,8 +137,42 @@ NS.initializer = function(e) {
     );
 };
 
+/**
+@method alert_delegation
+@description Setup delegation handlers for alert dismissal. Does not create a
+plugin instance on the Node, instead just hides directly. Default selector is
+<code>data-dismiss=alert</code>.
+@static
+**/
+NS.alert_delegation = function(selector) {
+    if ( typeof selector === 'undefined' ) {
+        selector = '*[data-dismiss=alert]';
+    }
+    // Don't bother plugging things in if we don't need to. Simply delegating
+    // click events with data-dismiss and reaching into the class will work.
+    Y.delegate('click', Y.Bootstrap.Alert.prototype._dismissAlertFn, document.body, selector);
+};
+
+/**
+@method expandable_delegation
+@description Setup delegation behaviors on all the nodes with
+<code>data-toggle=collapse</code> attributes.
+@static
+**/
+NS.expandable_delegation = function() {
+    Y.delegate('click', function(e) {
+        e.preventDefault();
+
+        var target = e.currentTarget;
+        if ( ! target.collapse ) {
+            target.plug( Y.Bootstrap.Collapse );
+        }
+        target.collapse.toggle();
+    }, document.body, '*[data-toggle=collapse]' );
+};
+
 Y.on('domready', NS.initializer);
 
 
 
-}, '@VERSION@' ,{requires:['gallery-bootstrap-misc','gallery-bootstrap-tooltip','gallery-bootstrap-tabview']});
+}, '@VERSION@' ,{requires:['gallery-bootstrap-misc','gallery-bootstrap-tooltip']});

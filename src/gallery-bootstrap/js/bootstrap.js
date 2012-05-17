@@ -1,5 +1,3 @@
-YUI.add('gallery-bootstrap', function(Y) {
-
 /**
 
 This sets up the Twitter Bootstrap Data API automatically, and loads all
@@ -56,12 +54,8 @@ attribute.
 var NS = Y.namespace('Bootstrap');
 
 NS.initializer = function(e) {
+    Y.log('initializer!');
 
-<<<<<<< HEAD
-    //var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
-
-=======
->>>>>>> gallery-bootstrap
     NS.dropdown_delegation();
     NS.alert_delegation();
     NS.expandable_delegation();
@@ -86,6 +80,7 @@ NS.initializer = function(e) {
                 carousel_id = this.get('href');
                 if ( carousel_id ) {
                     carousel_id = carousel_id.replace(/.*(?=#[^\s]+$)/, '');
+                    Y.log('finding ' + carousel_id);
                     carousel = Y.one( carousel_id );
                 }
             }
@@ -96,6 +91,7 @@ NS.initializer = function(e) {
                 if ( ! carousel.carousel ) {
                     carousel.plug( NS.Carousel, options );
                 }
+                Y.log('Direction: ' + direction);
                 carousel.carousel[direction]();
             }
         },
@@ -170,6 +166,3 @@ NS.expandable_delegation = function() {
 
 Y.on('domready', NS.initializer);
 
-
-
-}, '@VERSION@' ,{requires:['gallery-bootstrap-misc','gallery-bootstrap-tooltip']});
