@@ -152,7 +152,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                 preventDefault: function() { },
                 halt:           function() { }
             };
-        this._dialogFromNode(e);
+        return this._dialogFromNode(e);
     },
 
     _triggerEventFn: function(e) {
@@ -235,6 +235,8 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             overlay.show();
             this.fire('show', { dialog: overlay, trigger: target });
         }
+
+        return overlay;
     },
 
     _setupDialog: function(element, template, attrs) {
