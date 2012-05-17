@@ -9,9 +9,8 @@ full module, we have Bootstrap Misc!
 **/
 
 /**
-@class Bootstrap
-**/
 
+**/
 // We must extend Y.Widget to have extra class names.
 Y.Widget.ATTRS.classNames = {
 	valueFn: function () {
