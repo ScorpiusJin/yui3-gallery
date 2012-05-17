@@ -126,24 +126,3 @@ Y.extend(AlertPlugin, Y.Plugin.Base, {
 
 NS.Alert = AlertPlugin;
 
-/**
-@class Bootstrap
-
-**/
-
-/**
-@method alert_delegation
-@description Setup delegation handlers for alert dismissal. Does not create a
-plugin instance on the Node, instead just hides directly. Default selector is
-<code>data-dismiss=alert</code>.
-@static
-**/
-NS.alert_delegation = function(selector) {
-    if ( typeof selector === 'undefined' ) {
-        selector = '*[data-dismiss=alert]';
-    }
-    // Don't bother plugging things in if we don't need to. Simply delegating
-    // click events with data-dismiss and reaching into the class will work.
-    Y.delegate('click', AlertPlugin.prototype._dismissAlertFn, document.body, selector);
-};
-

@@ -218,28 +218,5 @@ Y.extend(ExpandablePlugin, Y.Plugin.Base, {
     }
 });
 
-/**
-@class Bootstrap
-
-**/
-
-/**
-@method expandable_delegation
-@description Setup delegation behaviors on all the nodes with
-<code>data-toggle=collapse</code> attributes.
-@static
-**/
-NS.expandable_delegation = function() {
-    Y.delegate('click', function(e) {
-        e.preventDefault();
-
-        var target = e.currentTarget;
-        if ( ! target.collapse ) {
-            target.plug( ExpandablePlugin );
-        }
-        target.collapse.toggle();
-    }, document.body, '*[data-toggle=collapse]' );
-};
-
 NS.Collapse = ExpandablePlugin;
 
