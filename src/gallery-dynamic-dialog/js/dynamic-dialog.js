@@ -16,23 +16,21 @@ The idea is that you can install event delegates on a page, and open up
 additional single panels in a dialog (loaded asynchronously) or just simply
 show a dialog from a template on the page.
 
-@example
+    var dialogs = new Y.DynamicDialog();
 
-  var dialogs = new Y.DynamicDialog();
+    // These are the defaults. Any link with open-dialog as a class
+    // will find a node from the href="#dialog-template-id" and open it.
+    dialogs.setupDelegates({
+       'a.open-dialog':   'click',
+       // This will fetch the href and display the results in the dialog.
+       // Your backend will have to know how to send partial renders out.
+       'a.remote-dialog': 'click'
+    });
 
-  // These are the defaults. Any link with open-dialog as a class
-  // will find a node from the href="#dialog-template-id" and open it.
-  dialogs.setupDelegates({
-     'a.open-dialog':   'click',
-     // This will fetch the href and display the results in the dialog.
-     // Your backend will have to know how to send partial renders out.
-     'a.remote-dialog': 'click'
-  });
-
-  dialog.on('show', function(e) {
-    // Immediately close it! This is absurd!
-    e.dialog.hide();
-  });
+    dialog.on('show', function(e) {
+      // Immediately close it! This is absurd!
+      e.dialog.hide();
+    });
 
 @class DynamicDialog
 **/
@@ -47,14 +45,36 @@ var DynamicDialog,
     Oeach    = Y.Object.each;
 
 DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
+    /**
+    @property container
+    @type Node
+    @default document.body
+    **/
     container: Y.one(document.body),
+    /**
+    @property panels
+    @type Object 
+    @default {}
+    **/
     panels: {},
 
+    /**
+    @property DEFAULT_EVENTS
+    What events are setup. They're handled via delegation. Defaults to handle
+    either the open-dialog or remote-dialog, and what event to bind to. The
+    event must be an event that bubbles so event delegation works.
+    @type Object 
+    @default { 'a.open-dialog' : 'click', 'a.remote-dialog' : 'click' }
+    **/
     DEFAULT_EVENTS: {
         'a.open-dialog':   'click',
         'a.remote-dialog': 'click'
     },
 
+    /**
+    @method initializer
+    Sets up event handlers and default events
+    **/
     initializer: function() {
         this.publish('submit', {
             defaultFn: this._defSubmitFn,
@@ -74,6 +94,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         this.publish('show', { preventable: false });
     },
 
+    /**
+    @method setupDelegates
+    Attachs all event listeners to the <code>container</code>
+    **/
     setupDelegates: function() {
         var container = this.container,
             events    = this.DEFAULT_EVENTS,
@@ -87,10 +111,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         );
     },
 
-    /* For 3.5.0, the pjax module will likely make all this stupid.
-    This method basically re-fires 'e' by calling _triggerEventFn with
-    a populated `e.template`.
-    */
+    /**
+    @method _fetchDialogContent
+    For a remote dialog, this makes a call via <code>Y.io</code> and will set
+    the Panel content based on the server response.
+    On success, fires the getSuccess event.
+    On failure, will fire the getFailure event.
+    @protected
+    **/
     _fetchDialogContent: function(e) {
         Y.log('_fetchDialogContent');
         var target   = e.currentTarget,
@@ -145,6 +173,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         Y.io( source, cfg );
     },
 
+    /**
+    @method open
+    @param selector {String} Open the dialog that matches on <code>Y.one(selector)</code>
+    **/
     open: function(selector) {
         var node = Y.one(selector),
             e    = {
@@ -155,10 +187,22 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         return this._dialogFromNode(e);
     },
 
+    /**
+    @method _triggerEventFn
+    Calls _dialogFromNode based on an event to open a panel.
+    @protected
+    **/
     _triggerEventFn: function(e) {
         this._dialogFromNode(e);
     },
 
+    /**
+    @method _dialogFromNode
+    From a target (from an event, perhaps) extract all the properties to
+    open the panel with. If the node has a remote overlay class, it will
+    initiate the fetch from the remote location.
+    @protected
+    **/
     _dialogFromNode: function(e) {
         var target   = e.domTarget ? e.domTarget : e.currentTarget,
             source   = target.get('tagName') === 'A' ?
@@ -242,6 +286,13 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         return overlay;
     },
 
+    /**
+    @method _setupDialog
+    @param element {Node}
+    @param template {String}
+    @param attrs {Object}
+    Setup the Panel object and render it into the container.
+    **/
     _setupDialog: function(element, template, attrs) {
         var self    = this,
             title   = element.getAttribute('title') || template.getAttribute('title') || '',
@@ -340,6 +391,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         return panel;
     },
 
+    /**
+    @method _defSubmitButtonFn
+    Handle an event of the primary button being clicked, which fires a submit
+    event. This attempts to emulate, within sanity, of a standard form.
+    **/
     _defSubmitButtonFn: function(e) {
         this.fire('submit', {
             dialog:  e.dialog,
@@ -349,6 +405,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         });
     },
 
+    /**
+    @method defSubmitFn
+    Submit the dialog, if applicable. If it's asynchronous, it will do it
+    via `Y.io` using form serialization (`io-form`).
+    **/
     _defSubmitFn: function(e) {
         var dialog  = e.dialog,
             form    = e.form,
@@ -385,6 +446,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         Y.io( action, cfg );
     },
 
+    /**
+    @method _ioSuccess
+    Handle a successful `Y.io` call, hides the dialog and fires the `ioSuccess`
+    event.
+    **/
     _ioSuccess: function(id, o, args) {
         args.dialog.hide();
         args.response = o;
@@ -392,6 +458,15 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         Y.log('_ioSuccess done');
     },
 
+    /**
+    @method _ioFailure
+    Handle a failed `Y.io` call (usually a bad request made to the
+    backend), will not close the dialog but fire the `ioFailure` event.
+
+    Will add the ioFailureClass to the bounding box of the panel in question.
+
+    Will potentially shake the node to provide a visual indication of failure.
+    **/
     _ioFailure: function(id, o, args) {
         var dialog    = args.dialog,
             form      = args.form,
@@ -417,6 +492,13 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         }
     },
 
+    /**
+    @method _shakeNode
+    Shakes the node back and forth as a visual indication of failure, drawing
+    attention to the dialog.
+    @param node {Node} Node to shake
+    @param callback {Function} Function to execute after the node is shaken.
+    **/
     _shakeNode: function(node, callback) {
         var curX = node.getX(),
             curY = node.getY(),
@@ -444,19 +526,80 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
 }, {
     ATTRS: {
+        /**
+        Whether panels should be modal.
+ 
+        @attribute modal
+        @type boolean
+        @default false
+        **/
         modal             : { value: false },
+        /**
+        At what zIndex to create the Panels for.
+ 
+        @attribute zIndex
+        @type Number
+        @default 1
+        **/
         zIndex            : { value: 1 },
+        /**
+        What text should be used for the close indicator on the Panels
+        @attribute closeLabel
+        @type string
+        @default \u2715
+        **/
         closeLabel        : { value: "\u2715" },
+        /**
+        What text for the "Ok" button.
+        @attribute okLabel
+        @type String
+        @default Ok
+        **/
         okLabel           : { value: 'OK' },
+        /**
+        What text for the "Cancel" button.
+        @attribute cancelLabel
+        @type String
+        @default Cancel
+        **/
         cancelLabel       : { value: 'Cancel' },
+        /**
+        What text for the "Submit" button (if the dialog is a form).
+        @attribute submitLabel 
+        @type String
+        @default Submit
+        **/
         submitLabel       : { value: 'Submit' },
+        /**
+        What to display if the backend fails (a 500 error, etc)
+        @attribute remoteFailureText
+        @type String
+        @default `&lt;p&gt;There was a problem fetching the dialog content. Sorry&lt;/p&gt;`
+        **/
         remoteFailureText : { value: '<p>There was a problem fetching the dialog content. Sorry.</p>' },
+        /**
+        Class to look for to determine if a dialog is merely `open` vs. `remote`
+        @attribute dialogClass
+        @type String
+        @default open-dialog
+        **/
         dialogClass       : { value: 'open-dialog' },
+        /**
+        Class to look for to determine if a dialog should load remote content.
+        @attribute remoteClass 
+        @type String
+        @default remote-dialog
+        **/
         remoteClass       : { value: 'remote-dialog' },
+        /**
+        What class to apply to the dialog if a remote request fails.
+        @attribute ioFailureClass
+        @type String
+        @default yui3-dynamic-dialog-io-failure
+        **/
         ioFailureClass    : { value: 'yui3-dynamic-dialog-io-failure' }
     }
 });
-
 
 Y.DynamicDialog = DynamicDialog;
 
