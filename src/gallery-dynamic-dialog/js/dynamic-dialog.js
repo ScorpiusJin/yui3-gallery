@@ -588,7 +588,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         The text to display if the backend fails (a 500 error, etc)
         @attribute remoteFailureText
         @type String
-        @default `&lt;p&gt;There was a problem fetching the dialog content. Sorry&lt;/p&gt;`
+        @default `<p>There was a problem fetching the dialog content. Sorry</p>`
         **/
         remoteFailureText : { value: '<p>There was a problem fetching the dialog content. Sorry.</p>' },
         /**
