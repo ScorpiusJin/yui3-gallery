@@ -53,7 +53,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     container: Y.one(document.body),
     /**
     @property panels
-    @type Object 
+    @type Object
     @default {}
     **/
     panels: {},
@@ -63,7 +63,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     What events are setup. They're handled via delegation. Defaults to handle
     either the open-dialog or remote-dialog, and what event to bind to. The
     event must be an event that bubbles so event delegation works.
-    @type Object 
+    @type Object
     @default { 'a.open-dialog' : 'click', 'a.remote-dialog' : 'click' }
     **/
     DEFAULT_EVENTS: {
@@ -225,7 +225,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
             return this._fetchDialogContent(e);
         }
 
-        Y.log('_triggerEventFn'); 
+        Y.log('_triggerEventFn');
         dom_attrs.each( function(el) {
             var name = el.get('name');
             if ( name.match(/^data-/) ) {
@@ -380,11 +380,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
         /* How should we align? */
         panel.on('visibleChange', function(e) {
-            this.fire('visibleChange', { 
+            this.fire('visibleChange', {
                 event: e,
                 panel: panel
             });
-        }, this);        
+        }, this);
 
         this.panels[ '#' + template.get('id') ] = panel;
 
@@ -528,7 +528,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     ATTRS: {
         /**
         Whether panels should be modal.
- 
+
         @attribute modal
         @type boolean
         @default false
@@ -536,7 +536,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         modal             : { value: false },
         /**
         At what zIndex to create the Panels for.
- 
+
         @attribute zIndex
         @type Number
         @default 1
@@ -565,7 +565,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         cancelLabel       : { value: 'Cancel' },
         /**
         What text for the "Submit" button (if the dialog is a form).
-        @attribute submitLabel 
+        @attribute submitLabel
         @type String
         @default Submit
         **/
@@ -586,7 +586,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         dialogClass       : { value: 'open-dialog' },
         /**
         Class to look for to determine if a dialog should load remote content.
-        @attribute remoteClass 
+        @attribute remoteClass
         @type String
         @default remote-dialog
         **/
