@@ -557,35 +557,35 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         **/
         zIndex            : { value: 1 },
         /**
-        What text should be used for the close indicator on the Panels
+        The text to display for the close indicator on the Panels.
         @attribute closeLabel
         @type string
         @default \u2715
         **/
         closeLabel        : { value: "\u2715" },
         /**
-        What text for the "Ok" button.
+        The text to display for the "OK" button.
         @attribute okLabel
         @type String
         @default Ok
         **/
         okLabel           : { value: 'OK' },
         /**
-        What text for the "Cancel" button.
+        The text to display for the "Cancel" button.
         @attribute cancelLabel
         @type String
         @default Cancel
         **/
         cancelLabel       : { value: 'Cancel' },
         /**
-        What text for the "Submit" button (if the dialog is a form).
+        The text to display for the "Submit" button (if the dialog is a form).
         @attribute submitLabel
         @type String
         @default Submit
         **/
         submitLabel       : { value: 'Submit' },
         /**
-        What to display if the backend fails (a 500 error, etc)
+        The text to display if the backend fails (a 500 error, etc)
         @attribute remoteFailureText
         @type String
         @default `&lt;p&gt;There was a problem fetching the dialog content. Sorry&lt;/p&gt;`
@@ -606,7 +606,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         **/
         remoteClass       : { value: 'remote-dialog' },
         /**
-        What class to apply to the dialog if a remote request fails.
+        Class to apply to the dialog if a remote request fails.
         @attribute ioFailureClass
         @type String
         @default yui3-dynamic-dialog-io-failure
