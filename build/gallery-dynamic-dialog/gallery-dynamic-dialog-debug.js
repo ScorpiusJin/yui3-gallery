@@ -61,10 +61,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     panels: {},
 
     /**
-    @property DEFAULT_EVENTS
     What events are setup. They're handled via delegation. Defaults to handle
     either the open-dialog or remote-dialog, and what event to bind to. The
     event must be an event that bubbles so event delegation works.
+    @property DEFAULT_EVENTS
     @type Object
     @default { 'a.open-dialog' : 'click', 'a.remote-dialog' : 'click' }
     **/
@@ -74,8 +74,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method initializer
     Sets up event handlers and default events
+
+    @method initializer
     **/
     initializer: function() {
         this.publish('submit', {
@@ -97,8 +98,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method setupDelegates
     Attachs all event listeners to the <code>container</code>
+
+    @method setupDelegates
     **/
     setupDelegates: function() {
         var container = this.container,
@@ -114,11 +116,13 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _fetchDialogContent
     For a remote dialog, this makes a call via <code>Y.io</code> and will set
     the Panel content based on the server response.
+
     On success, fires the getSuccess event.
     On failure, will fire the getFailure event.
+
+    @method _fetchDialogContent
     @protected
     **/
     _fetchDialogContent: function(e) {
@@ -190,8 +194,9 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _triggerEventFn
     Calls _dialogFromNode based on an event to open a panel.
+
+    @method _triggerEventFn
     @protected
     **/
     _triggerEventFn: function(e) {
@@ -199,10 +204,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _dialogFromNode
     From a target (from an event, perhaps) extract all the properties to
     open the panel with. If the node has a remote overlay class, it will
     initiate the fetch from the remote location.
+
+    @method _dialogFromNode
     @protected
     **/
     _dialogFromNode: function(e) {
@@ -289,11 +295,12 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
+    Setup the Panel object and render it into the container.
+
     @method _setupDialog
     @param element {Node}
     @param template {String}
     @param attrs {Object}
-    Setup the Panel object and render it into the container.
     **/
     _setupDialog: function(element, template, attrs) {
         var self    = this,
@@ -394,9 +401,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _defSubmitButtonFn
     Handle an event of the primary button being clicked, which fires a submit
     event. This attempts to emulate, within sanity, of a standard form.
+
+    @method _defSubmitButtonFn
+    @protected
     **/
     _defSubmitButtonFn: function(e) {
         this.fire('submit', {
@@ -408,9 +417,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method defSubmitFn
     Submit the dialog, if applicable. If it's asynchronous, it will do it
     via `Y.io` using form serialization (`io-form`).
+
+    @method defSubmitFn
     **/
     _defSubmitFn: function(e) {
         var dialog  = e.dialog,
@@ -449,9 +459,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _ioSuccess
     Handle a successful `Y.io` call, hides the dialog and fires the `ioSuccess`
     event.
+
+    @method _ioSuccess
     **/
     _ioSuccess: function(id, o, args) {
         args.dialog.hide();
@@ -461,13 +472,14 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _ioFailure
     Handle a failed `Y.io` call (usually a bad request made to the
     backend), will not close the dialog but fire the `ioFailure` event.
 
     Will add the ioFailureClass to the bounding box of the panel in question.
 
     Will potentially shake the node to provide a visual indication of failure.
+
+    @method _ioFailure
     **/
     _ioFailure: function(id, o, args) {
         var dialog    = args.dialog,
@@ -495,9 +507,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    @method _shakeNode
     Shakes the node back and forth as a visual indication of failure, drawing
     attention to the dialog.
+
+    @method _shakeNode
     @param node {Node} Node to shake
     @param callback {Function} Function to execute after the node is shaken.
     **/
