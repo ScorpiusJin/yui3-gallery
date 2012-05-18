@@ -567,7 +567,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         The text to display for the "OK" button.
         @attribute okLabel
         @type String
-        @default Ok
+        @default OK
         **/
         okLabel           : { value: 'OK' },
         /**
