@@ -96,7 +96,7 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     },
 
     /**
-    Attachs all event listeners to the <code>container</code>
+    Attaches all event listeners to the <code>container</code>
 
     @method setupDelegates
     **/
