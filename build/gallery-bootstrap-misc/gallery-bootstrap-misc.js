@@ -667,4 +667,4 @@ NS.Modal = ModalPlugin;
 
 
 
-}, '@VERSION@' ,{requires:['panel','anim','transition','widget','event','event-outside','event-delegate','autocomplete','autocomplete-filters','autocomplete-highlighters','json']});
+}, '@VERSION@' ,{requires:['plugin','panel','anim','transition','widget','event','event-outside','event-delegate','autocomplete','autocomplete-filters','autocomplete-highlighters','json']});
