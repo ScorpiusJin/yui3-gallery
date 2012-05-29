@@ -57,11 +57,6 @@ var NS = Y.namespace('Bootstrap');
 
 NS.initializer = function(e) {
 
-<<<<<<< HEAD
-    //var tooltip = new NS.Tooltip({ selector : '*[rel=tooltip]' });
-
-=======
->>>>>>> gallery-bootstrap
     NS.dropdown_delegation();
     NS.alert_delegation();
     NS.expandable_delegation();
