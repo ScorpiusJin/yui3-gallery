@@ -167,4 +167,4 @@ Y.on('domready', NS.initializer);
 
 
 
-}, '@VERSION@' ,{requires:['gallery-bootstrap-misc','gallery-bootstrap-tooltip']});
+}, '@VERSION@' ,{requires:['gallery-bootstrap-misc','gallery-bootstrap-tooltip','gallery-bootstrap-tabview']});
