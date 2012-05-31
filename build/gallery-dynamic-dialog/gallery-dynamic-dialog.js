@@ -341,17 +341,17 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
 
         /* If we have a form, setup form buttons */
         if ( form ) {
-            var cancelClasses = template.getAttribute('data-cancel-class') || '';
+            var cancelClasses = element.getAttribute('data-cancel-class') || template.getAttribute('data-cancel-class') || '';
             panel.addButton({
-                value: template.getAttribute('data-cancel-label') || this.get('cancelLabel'),
+                value: element.getAttribute('data-cancel-label') || template.getAttribute('data-cancel-label') || this.get('cancelLabel'),
                 classNames: [ 'yui3-dynamic-dialog-cancel', cancelClasses.split(' ')],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
             });
 
-            var submitClasses = template.getAttribute('data-submit-class') || '';
+            var submitClasses = element.getAttribute('data-submit-class') || template.getAttribute('data-submit-class') || '';
             panel.addButton({
-                value: template.getAttribute('data-submit-label') || this.get('submitLabel'),
+                value: element.getAttribute('data-submit-label') || template.getAttribute('data-submit-label') || this.get('submitLabel'),
                 classNames: [ 'yui3-dynamic-dialog-submit', submitClasses.split(' ') ],
                 action: function(e) {
                     e.preventDefault();
@@ -373,10 +373,10 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         }
         /* Otherwise, just a simple Hide button */
         else {
-            var okClasses = template.getAttribute('data-ok-class') || '';
+            var okClasses = element.getAttribute('data-ok-class') || template.getAttribute('data-ok-class') || '';
 
             panel.addButton({
-                value: template.getAttribute('data-ok-label') || this.get('okLabel'),
+                value: element.getAttribute('data-ok-label') || template.getAttribute('data-ok-label') || this.get('okLabel'),
                 classNames: [ 'yui3-dynamic-dialog-ok', okClasses.split(' ') ],
                 action: function(e) { e.preventDefault(); this.hide(); },
                 section: Y.WidgetStdMod.FOOTER
