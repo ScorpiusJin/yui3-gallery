@@ -1,11 +1,15 @@
 "use strict";
 
-/**********************************************************************
+/**
+ * @module gallery-nodelist-extras2
+ */
+
+/**
  * <p>Augments Y.NodeList with the same higher-order functions that
  * array-extras adds to Y.Array.</p>
  * 
- * @module gallery-nodelist-extras2
- * @class NodeList
+ * @main gallery-nodelist-extras2
+ * @class NodeList~extras2
  */
 
 Y.mix(Y.NodeList.prototype,
@@ -16,6 +20,7 @@ Y.mix(Y.NodeList.prototype,
 	 * value.  The function receives the Node, the index, and the NodeList
 	 * itself as parameters (in that order).
 	 *
+	 * @method every
 	 * @param f {Function} the function to execute on each item
 	 * @param c {Object} optional context object
 	 * @return {Boolean} true if every item in the array returns true from the supplied function, false otherwise
@@ -36,6 +41,7 @@ Y.mix(Y.NodeList.prototype,
 	 * The function receives the Node, the index, and the NodeList itself
 	 * as parameters (in that order).
 	 *
+	 * @method find
 	 * @param f {Function} the function to execute on each item
 	 * @param c {Object} optional context object
 	 * @return {Node} the first Node for which the supplied function returns true, or null if it never returns true
@@ -57,6 +63,7 @@ Y.mix(Y.NodeList.prototype,
 	 * returns a new array with the results.  The function receives the
 	 * Node, the index, and the NodeList itself as parameters (in that order).
 	 *
+	 * @method map
 	 * @param f {String} the function to invoke
 	 * @param c {Object} optional context object
 	 * @return {Array} all return values, mapped according to the item key
@@ -78,6 +85,7 @@ Y.mix(Y.NodeList.prototype,
 	 * the Node, the index, and the NodeList itself as parameters (in that
 	 * order).
 	 *
+	 * @method partition
 	 * @param f {Function} the function to execute on each item
 	 * @param c {Object} optional context object
 	 * @return {Object} object with two properties: matches and rejects. Each is a NodeList containing the items that were selected or rejected by the test function (or an empty object if none).
@@ -109,6 +117,7 @@ Y.mix(Y.NodeList.prototype,
 	 * NodeList itself as parameters (in that order).  The function must
 	 * return the updated value.
 	 *
+	 * @method reduce
 	 * @param init {Mixed} the initial value
 	 * @param f {String} the function to invoke
 	 * @param c {Object} optional context object
@@ -117,6 +126,30 @@ Y.mix(Y.NodeList.prototype,
 	reduce: function(init, f, c)
 	{
 		return Y.Array.reduce(this._nodes, init, function(acc, node, index)
+		{
+			node = Y.one(node);
+			return f.call(c || node, acc, node, index, this);
+		},
+		this);
+	},
+
+	/**
+	 * Executes the supplied function on each Node in the NodeList,
+	 * starting at the end and folding the NodeList into a single value.
+	 * The function receives the value returned by the previous iteration
+	 * (or the initial value if this is the first iteration), the Node
+	 * being iterated, the index, and the NodeList itself as parameters (in
+	 * that order).  The function must return the updated value.
+	 *
+	 * @method reduceRight
+	 * @param init {Mixed} the initial value
+	 * @param f {String} the function to invoke
+	 * @param c {Object} optional context object
+	 * @return {Mixed} final result from iteratively applying the given function to each Node in the NodeList
+	 */
+	reduceRight: function(init, f, c)
+	{
+		return Y.Array.reduceRight(this._nodes, init, function(acc, node, index)
 		{
 			node = Y.one(node);
 			return f.call(c || node, acc, node, index, this);

@@ -5,6 +5,10 @@ http://developer.yahoo.net/yui/license.txt
 */
 
 /**
+ * @module gallery-paginator
+ */
+
+/**
  * ui Component to generate the link to jump to the previous page.
  *
  * @class Paginator.ui.PreviousPageLink
@@ -18,6 +22,7 @@ Paginator.ui.PreviousPageLink = function (p) {
     p.after('recordOffsetChange',this.update,this);
     p.after('rowsPerPageChange',this.update,this);
     p.after('totalRecordsChange',this.update,this);
+    p.after('disabledChange',this.update,this);
 
     p.after('previousPageLinkLabelChange',this.update,this);
     p.after('previousPageLinkClassChange',this.update,this);
@@ -95,6 +100,11 @@ Paginator.ui.PreviousPageLink.prototype = {
             c     = p.get('previousPageLinkClass'),
             label = p.get('previousPageLinkLabel');
 
+        if (this.link) {
+            this.link.remove(true);
+            this.span.remove(true);
+        }
+
         this.link= Y.Node.create(
             '<a href="#" id="'+id_base+'-prev-link">'+label+'</a>');
         this.link.set('className', c);
@@ -119,7 +129,7 @@ Paginator.ui.PreviousPageLink.prototype = {
         }
 
         var par = this.current ? this.current.get('parentNode') : null;
-        if (this.paginator.getCurrentPage() > 1) {
+        if (this.paginator.getCurrentPage() > 1 && !this.paginator.get('disabled')) {
             if (par && this.current === this.span) {
                 par.replaceChild(this.link,this.current);
                 this.current = this.link;

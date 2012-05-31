@@ -1,14 +1,23 @@
+"use strict";
+
+/**
+ * @module gallery-iterable-extras
+ */
+
 /**********************************************************************
  * <p>Functional programming support for iterable classes.  The class must
- * implement the iterator() (which must return an object that implements
- * next() and atEnd()) and newInstance() methods.</p>
+ * implement the `iterator` and `newInstance` methods.</p>
  * 
- * <p>Iterable classes must mix these functions:  <code>Y.mix(SomeClass,
- * Y.Iterable, false, null, 4);</code>  Passing false as the third argument
+ * <p>For most methods, the iterator only needs to implement `next` and
+ * `atEnd`.  Backwards iterators like `reduceRight` require `prev` and
+ * `atBeginning`.</p>
+ * 
+ * <p>Iterable classes must mix these functions:  `Y.mix(SomeClass,
+ * Y.Iterable, false, null, 4);`  Passing false as the third argument
  * allows your class to provide optimized implementations of individual
  * functions.</p>
  * 
- * @module gallery-iterable-extras
+ * @main gallery-iterable-extras
  * @class Iterable
  */
 
@@ -192,6 +201,40 @@ Y.Iterable =
 		{
 			result = f.call(c, result, iter.next(), i, this);
 			i++;
+		}
+
+		return result;
+	},
+
+	/**
+	 * Executes the supplied function on each item in the list, starting
+	 * from the end and folding the list into a single value.  The function
+	 * receives the value returned by the previous iteration (or the
+	 * initial value if this is the first iteration), the value being
+	 * iterated, the index, and the list itself as parameters (in that
+	 * order).  The function must return the updated value.
+	 *
+	 * @method reduceRight
+	 * @param init {Mixed} the initial value
+	 * @param f {String} the function to invoke
+	 * @param c {Object} optional context object
+	 * @return {Mixed} final result from iteratively applying the given function to each item in the list
+	 */
+	reduceRight: function(init, f, c)
+	{
+		var result = init;
+
+		var iter = this.iterator(), i = 0;
+		while (!iter.atEnd())
+		{
+			iter.next();
+			i++;
+		}
+
+		while (!iter.atBeginning())
+		{
+			i--;
+			result = f.call(c, result, iter.prev(), i, this);
 		}
 
 		return result;

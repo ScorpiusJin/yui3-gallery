@@ -5,6 +5,10 @@ http://developer.yahoo.net/yui/license.txt
 */
 
 /**
+ * @module gallery-paginator
+ */
+
+/**
  * ui Component to generate the textual report of current pagination status.
  * E.g. "Now viewing page 1 of 13".
  *
@@ -128,6 +132,10 @@ Paginator.ui.CurrentPageReport.prototype = {
      * @return {HTMLElement}
      */
     render : function (id_base) {
+        if (this.span) {
+            this.span.remove(true);
+        }
+
         this.span = Y.Node.create(
             '<span id="'+id_base+'-page-report"></span>');
         this.span.set('className', this.paginator.get('pageReportClass'));

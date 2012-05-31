@@ -2,14 +2,18 @@ YUI.add('gallery-layout-datatable', function(Y) {
 
 "use strict";
 
+/**
+ * @module gallery-layout-datatable
+ */
+
 /**********************************************************************
  * <p>Plugin for scrolling DataTable to make it fit inside a PageLayout
  * module.  After you plug it in, it automatically detects the PageLayout
  * module, so you don't have to do anything.</p>
  * 
- * @module gallery-layout-datatable
- * @namespace Plugin
+ * @main gallery-layout-datatable
  * @class PageLayoutDataTableModule
+ * @namespace Plugin
  * @extends Plugin.Base
  * @constructor
  * @param config {Object} configuration
@@ -27,10 +31,11 @@ PLDTModule.NS   = "layout";
 PLDTModule.ATTRS =
 {
 	/**
-	 * (Required) Instance of Y.PageLayout
+	 * Instance of Y.PageLayout
 	 * 
-	 * @config layout
+	 * @attribute layout
 	 * @type {PageLayout}
+	 * @required
 	 * @writeonce
 	 */
 	layout:
@@ -80,4 +85,4 @@ Y.namespace("Plugin");
 Y.Plugin.PageLayoutDataTableModule = PLDTModule;
 
 
-}, 'gallery-2012.04.10-14-57' ,{requires:['gallery-layout','datatable-scroll','plugin']});
+}, 'gallery-2012.05.23-19-56' ,{requires:['gallery-layout','datatable-scroll','plugin']});

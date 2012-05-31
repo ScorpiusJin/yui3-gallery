@@ -5,6 +5,10 @@ http://developer.yahoo.net/yui/license.txt
 */
 
 /**
+ * @module gallery-paginator
+ */
+
+/**
  * ui Component to generate the link to jump to the next page.
  *
  * @class Paginator.ui.NextPageLink
@@ -18,6 +22,7 @@ Paginator.ui.NextPageLink = function (p) {
     p.after('recordOffsetChange', this.update,this);
     p.after('rowsPerPageChange', this.update,this);
     p.after('totalRecordsChange', this.update,this);
+    p.after('disabledChange', this.update,this);
 
     p.after('nextPageLinkClassChange', this.rebuild, this);
     p.after('nextPageLinkLabelChange', this.rebuild, this);
@@ -96,6 +101,11 @@ Paginator.ui.NextPageLink.prototype = {
             label = p.get('nextPageLinkLabel'),
             last  = p.getTotalPages();
 
+        if (this.link) {
+            this.link.remove(true);
+            this.span.remove(true);
+        }
+
         this.link = Y.Node.create(
             '<a href="#" id="'+id_base+'-next-link">'+label+'</a>');
         this.link.set('className', c);
@@ -123,7 +133,7 @@ Paginator.ui.NextPageLink.prototype = {
         var last = this.paginator.getTotalPages(),
             par  = this.current ? this.current.get('parentNode') : null;
 
-        if (this.paginator.getCurrentPage() !== last) {
+        if (this.paginator.getCurrentPage() !== last && !this.paginator.get('disabled')) {
             if (par && this.current === this.span) {
                 par.replaceChild(this.link,this.current);
                 this.current = this.link;
