@@ -409,4 +409,4 @@ Y.PopupCalendar = Y.Base.create('popup-calendar', Y.Calendar, [Y.WidgetPosition,
 });
 
 
-}, 'gallery-2012.05.16-20-37' ,{skinnable:true, requires:['calendar', 'widget-position', 'widget-position-align', 'widget-autohide']});
+}, '@VERSION@' ,{requires:['calendar', 'widget-position', 'widget-position-align', 'widget-autohide'], skinnable:true});

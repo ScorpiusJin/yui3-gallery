@@ -1,0 +1,11 @@
+{
+    "name"    : "gallery-dynamic-dialog",
+    "buildDir"  : "../../build/gallery-dynamic-dialog",
+    "sourceDir"   : "js",
+    "sourceFiles" : [
+        "dynamic-dialog.js"
+    ],
+    "details" : {
+        "requires"   : ["anim","substitute","widget","base","panel","io","io-form","event-delegate"]
+    }
+}

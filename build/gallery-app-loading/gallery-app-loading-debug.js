@@ -157,4 +157,4 @@ YUI.add('gallery-app-loading', function(Y) {
     Y.AppLoading = AppLoading;
 
 
-}, 'gallery-2012.05.09-20-27' ,{skinnable:false, requires:['app']});
+}, '@VERSION@' ,{requires:['app'], skinnable:false});

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YUI3 IO Editable Example</title>
+        <style type="text/css">
+        li.success { color: green; }
+        li.failure { color: red; }
+        </style>
+    </head>
+
+    <body>
+        <ul>
+            <li>Options</li>
+            <li>Options</li>
+            <li>Options</li>
+            <li>Options</li>
+        </ul>
+        <div id="select-content" style="display: none;">
+            <form method="post">
+                <select name="foo">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+                <input type="submit" value="Go">
+            </form>
+        </div>
+        <script type="text/javascript" src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+        <script type="text/javascript">
+        YUI({
+            modules: {
+                'gallery-io-editable': {
+                    fullpath: '../../../build/gallery-io-editable/gallery-io-editable-debug.js',
+                    requires: [
+                        'io-form', 'plugin', 'base', 'node', 'event', 'event-outside'
+                    ]
+                }
+            }
+        }).use('gallery-io-editable', function(Y) {
+            Y.all('li').plug(
+                { fn: Y.Plugin.IOEditable, cfg: { srcNode: '#select-content', replaceContent: true } }
+            );
+        });
+        </script> 
+    </body>
+</html>
