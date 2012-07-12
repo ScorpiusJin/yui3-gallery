@@ -44,7 +44,7 @@ Widget = Y.Base.create('radialProgress', Y.Widget, [], {
                 color : stops[0].background
             },
             stroke : { weight : 0 }
-        })
+        });
 
         graphic.render( contentBox );
         this.graphic = graphic;
