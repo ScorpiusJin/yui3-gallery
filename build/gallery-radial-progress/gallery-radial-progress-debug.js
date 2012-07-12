@@ -104,7 +104,6 @@ Widget = Y.Base.create('radialProgress', Y.Widget, [], {
         }
 
         Aeach( stops, function(stop) {
-            Y.log('checking if ' + arc + ' >= ' + stop.from);
             if ( arc >= stop.from && !stopFound ) {
                 slice.set('fill', { 'color' : stop.progress });
                 outline.set('fill', { 'color' : stop.background });
