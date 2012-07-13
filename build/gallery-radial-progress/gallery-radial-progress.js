@@ -97,8 +97,7 @@ Widget = Y.Base.create('radialProgress', Y.Widget, [], {
             arc      = Math.ceil( progress * 3.6 ),
             stopFound = false;
 
-        if ( arc >= 360 || arc <= -360 ) {
-            this.fire('complete');
+        if ( arc > 360 || arc < -360 ) {
             return;
         }
 
@@ -113,6 +112,10 @@ Widget = Y.Base.create('radialProgress', Y.Widget, [], {
         });
 
         slice.set('arc', arc);
+
+        if ( arc === 360 || arc === -360 ) {
+            this.fire('complete');
+        }
     }
 
 }, {
