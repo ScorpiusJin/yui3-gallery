@@ -173,4 +173,4 @@ Y.on('domready', NS.initializer);
 
 
 
-}, '@VERSION@' ,{requires:['gallery-bootstrap-alert', 'gallery-bootstrap-dropdown', 'gallery-bootstrap-misc', 'gallery-bootstrap-popover', 'gallery-bootstrap-tooltip', 'gallery-bootstrap-collapse', 'gallery-bootstrap-engine', 'gallery-bootstrap-modal', 'gallery-bootstrap-tabview', 'gallery-bootstrap-typeahead']});
+}, '@VERSION@' ,{requires:['gallery-bootstrap-alert', 'gallery-bootstrap-dropdown', 'gallery-bootstrap-popover', 'gallery-bootstrap-tooltip', 'gallery-bootstrap-collapse', 'gallery-bootstrap-engine', 'gallery-bootstrap-modal', 'gallery-bootstrap-tabview', 'gallery-bootstrap-typeahead']});
