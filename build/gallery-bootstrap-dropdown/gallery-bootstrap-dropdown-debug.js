@@ -25,6 +25,8 @@ It can also be plugged into any node or node list.
 @class Bootstrap.Dropdown
 **/
 
+var NS = Y.namespace('Bootstrap');
+
 function DropdownPlugin(config) {
   DropdownPlugin.superclass.constructor.apply(this, arguments);
 }
@@ -50,7 +52,13 @@ Y.extend( DropdownPlugin, Y.Plugin.Base, {
     },
 
     toggle : function() {
-        this.getTarget().toggleClass( this.config.className );
+        var target    = this.getTarget(),
+            className = this.config.className;
+
+        target.toggleClass( className );
+        target.once('clickoutside', function(e) {
+            target.toggleClass( className );
+        });
     },
 
     show : function() {
@@ -89,9 +97,18 @@ Y.extend( DropdownPlugin, Y.Plugin.Base, {
     }
 });
 
-Y.namespace('Bootstrap').Dropdown = DropdownPlugin;
+NS.Dropdown = DropdownPlugin;
+NS.dropdown_delegation = function() {
+    Y.delegate('click', function(e) {
+        var target = e.currentTarget;
+        e.preventDefault();
+
+        if ( typeof e.target.dropdown === 'undefined' ) {
+            target.plug( DropdownPlugin );
+            target.dropdown.toggle();
+        }
+    }, document.body, '*[data-toggle=dropdown]' );
+};
 
 
-
-
-}, '@VERSION@' ,{requires:['plugin','event']});
+}, '@VERSION@' ,{requires:['plugin','event','event-outside']});
