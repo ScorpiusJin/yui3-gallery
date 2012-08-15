@@ -125,14 +125,15 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
     **/
     _fetchDialogContent: function(e) {
         Y.log('_fetchDialogContent');
-        var target   = e.currentTarget,
-            source   = target.get('tagName') === 'A' ?
+        var target    = e.currentTarget,
+            source    = target.get('tagName') === 'A' ?
                         target.get('href') : target.get('target'),
-            async    = target.getAttribute('data-async') === 'true',
-            title    = (target.getAttribute('title') || ''),
-            dialog   = this,
-            error    = dialog.get('remoteFailureText'),
-            cfg      = {
+            async     = target.getAttribute('data-async') === 'true',
+            title     = (target.getAttribute('title') || ''),
+            dialog    = this,
+            error     = dialog.get('remoteFailureText'),
+            cacheBust = this.get('cacheBust'),
+            cfg       = {
                 method: 'GET',
                 arguments: {
                     dialog: dialog
@@ -174,6 +175,11 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
                     }
                 }
             };
+        if ( cacheBust ) {
+            source = source +
+                     ( source.indexOf('?') >= 0 ? '&' : '?' ) +
+                     cacheBust + '=' + ( new Date().getTime() );
+        }
         Y.io( source, cfg );
     },
 
@@ -611,9 +617,27 @@ DynamicDialog = Y.Base.create('dynamicDialog', Y.Base, [], {
         @type String
         @default yui3-dynamic-dialog-io-failure
         **/
-        ioFailureClass    : { value: 'yui3-dynamic-dialog-io-failure' }
+        ioFailureClass    : { value: 'yui3-dynamic-dialog-io-failure' },
+
+        /**
+        Attribute to append a cache-busting query parameter to the URI
+        on remote dialogs.
+        If you set this to a true value that isn't a string, it will default
+        to `t`.
+        @attribute cacheBust
+        @type String
+        @default null
+        **/
+        cacheBust : {
+            value : null,
+            setter : function(value) {
+                if ( value && !Y.Lang.isString(value) ) {
+                    value = 't';
+                }
+                return value;
+            }
+        }
     }
 });
 
 Y.DynamicDialog = DynamicDialog;
-
