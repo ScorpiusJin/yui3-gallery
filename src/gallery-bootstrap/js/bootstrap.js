@@ -56,6 +56,9 @@ var NS = Y.namespace('Bootstrap');
 NS.initializer = function(e) {
     Y.log('initializer!');
 
+    new Y.Bootstrap.Tooltip({ selector : '*[rel=tooltip]' }).render();
+    new Y.Bootstrap.Popover({ selector : '*[rel=popover]' }).render();
+
     NS.dropdown_delegation();
     NS.alert_delegation();
     NS.expandable_delegation();

@@ -40,8 +40,9 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
     eventIn  : 'mouseover',
     eventOut : 'mouseout',
     tooltip  : null,
-    template : '<div><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
 
+    prefix   : 'tooltip',
+    INNER_SELECTOR : '.tooltip-inner',
     BOUNDING_TEMPLATE : '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
 
     initializer : function() {
@@ -50,7 +51,7 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
             eventIn  = trigger === 'hover' ? this.eventIn : 'focus',
             eventOut = trigger === 'hover' ? this.eventOut : 'blur';
 
-        this._cssPrefix = 'tooltip';
+        this._cssPrefix = this.prefix;
 
         if ( selector ) {
             Y.delegate(eventIn,  this._showFn, document.body, selector, this);
@@ -60,11 +61,10 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
         this.after('titleChange', this.setContent, this);
 
         this.set('visible', false);
-        this.render();
     },
 
     _showFn : function(e) {
-        var target = e.target,
+        var target = e.currentTarget,
             delay  = this.get('delay'),
             title  = target.getAttribute('title'),
             box    = this.get('boundingBox');
@@ -75,6 +75,10 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
             target.removeAttribute('title');
             target.setAttribute('data-original-title', title);
         }
+        if ( target.getData('content') ) {
+            this.set('body', target.getData('content'));
+        }
+
         this.set('title', title);
         this._hoverState  = 'in';
         this._showTimeout = Y.later( delay, this, this._show, { target: target } );
@@ -87,8 +91,7 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
             target  = data.target;
 
         if ( this._hoverState === 'in' ) {
-            box.show();
-
+            box.setStyle('display', 'block');
             if ( target ) {
                 this.set('align', { node : target, points: this._getAlignment(place) });
             }
@@ -124,7 +127,6 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
                 }, function() {
                     box.removeClass('fade');
                     box.removeClass('in');
-                    box.hide();
                 });
             } else {
                 box.removeClass('fade');
@@ -149,14 +151,14 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
     },
 
     _defaultCB : function() {
-        return this.get('boundingBox').one('.tooltip-inner');
+        return this.get('boundingBox').one( this.INNER_SELECTOR );
     },
 
     setContent : function(e) {
         var title = this.get('title'),
             box   = this.get('contentBox');
 
-        box.setContent(title);
+        box.setHTML(title);
         Y.Array.each( 'fade in top bottom left right'.split(' '), function(c) {
             box.removeClass(c);
         });
@@ -207,6 +209,8 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
         @type String
         **/
         title     : { value : '' },
+        body      : { value : '' },
+
         /**
         Delay in hiding and showing the tooltip.
 
@@ -222,10 +226,21 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
         @default false
         @type boolean
         **/
-        visible   : { value : false }
+        visible   : { value : false },
+
+        /**
+        Attribute to specify the zIndex of the tooltip.
+
+        @attribute zIndex
+        @default 1010
+        @type Intger
+        **/
+        zIndex : { value : 1010 }
+
+        //contentBox : { valueFn : '_defaultCB' }
     }
 });
 
 
 
-}, '@VERSION@' ,{requires:['anim','transition','widget','base','widget-position-align','widget-stack','widget-position','widget-position-constrain']});
+}, '@VERSION@' ,{requires:['transition','widget','base','widget-position-align','widget-stack','widget-position','widget-position-constrain']});
