@@ -127,10 +127,12 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
                 }, function() {
                     box.removeClass('fade');
                     box.removeClass('in');
+                    box.setStyle('display', 'none');
                 });
             } else {
                 box.removeClass('fade');
                 box.removeClass('in');
+                box.setStyle('display', 'none');
             }
         }
     },
