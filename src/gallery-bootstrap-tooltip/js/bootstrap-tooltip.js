@@ -38,7 +38,6 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
     eventIn  : 'mouseover',
     eventOut : 'mouseout',
     tooltip  : null,
-
     prefix   : 'tooltip',
     INNER_SELECTOR : '.tooltip-inner',
     BOUNDING_TEMPLATE : '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
@@ -62,7 +61,7 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
     },
 
     _showFn : function(e) {
-        var target = e.currentTarget,
+        var target = e.target,
             delay  = this.get('delay'),
             title  = target.getAttribute('title'),
             box    = this.get('boundingBox');
@@ -73,10 +72,6 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
             target.removeAttribute('title');
             target.setAttribute('data-original-title', title);
         }
-        if ( target.getData('content') ) {
-            this.set('body', target.getData('content'));
-        }
-
         this.set('title', title);
         this._hoverState  = 'in';
         this._showTimeout = Y.later( delay, this, this._show, { target: target } );
@@ -90,6 +85,8 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
 
         if ( this._hoverState === 'in' ) {
             box.setStyle('display', 'block');
+            box.show();
+
             if ( target ) {
                 this.set('align', { node : target, points: this._getAlignment(place) });
             }
@@ -178,7 +175,6 @@ NS.Tooltip = Y.Base.create("bootstrapTooltip", Y.Widget, [ Y.WidgetPosition, Y.W
 
         @attribute placement
         @default top
-        @type String
         **/
         placement : { value : 'top' },
         /**
