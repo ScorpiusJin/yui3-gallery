@@ -5,7 +5,8 @@ YUI.add('gallery-bt-shortcut', function(Y) {
  *
  * @module gallery-bt-shortcut
  */
-var Mask = Y.one('.bt-shortcut-mask') || Y.one('body').appendChild(Y.Node.create('<div class="bt-shortcut-mask"></div>')),
+var body = Y.one('body'),
+    Mask = Y.one('.bt-shortcut-mask') || body.appendChild(Y.Node.create('<div class="bt-shortcut-mask"></div>')),
     WIDTH_CHANGE = 'widthChange',
     HEIGHT_CHANGE = 'heightChange',
     VISIBLE_CHANGE = 'visibleChange',
@@ -47,7 +48,7 @@ var Mask = Y.one('.bt-shortcut-mask') || Y.one('body').appendChild(Y.Node.create
      * @uses WidgetPosition
      * @uses WidgetStack
      * @uses WidgetPositionAlign
-     * @uses PushPop
+     * @uses Bottle.PushPop
      * @constructor
      */
     ShortCut = Y.Base.create('btshortcut', Y.Widget, [Y.WidgetParent, Y.WidgetPosition, Y.WidgetStack, Y.WidgetPositionAlign, Y.Bottle.PushPop], {
@@ -89,8 +90,9 @@ var Mask = Y.one('.bt-shortcut-mask') || Y.one('body').appendChild(Y.Node.create
 
         renderUI: function () {
             var O = this.get('boundingBox'),
-                W = O.get('offsetWidth'),
-                H = O.get('offsetHeight');
+                P = this.get('contentBox'),
+                W = O.get('offsetWidth') || P.get('offsetWidth'),
+                H = O.get('offsetHeight') || P.get('offsetHeight');
 
             if (!this.get('height') && H) {
                 this.set('height', H);
@@ -181,7 +183,7 @@ var Mask = Y.one('.bt-shortcut-mask') || Y.one('body').appendChild(Y.Node.create
                 posData = POSITIONS[this.get('showFrom')];
 
             if (!vis) {
-                this.align(null, [isUnveil ? posData[0] : posData[3], posData[0]]);
+                this.align(body, [isUnveil ? posData[0] : posData[3], posData[0]]);
             }
         },
 
