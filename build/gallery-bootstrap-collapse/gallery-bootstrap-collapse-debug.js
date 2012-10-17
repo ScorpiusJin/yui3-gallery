@@ -220,4 +220,4 @@ Y.namespace('Bootstrap').Collapse = CollapsePlugin;
 
 
 
-}, '@VERSION@' ,{requires:['plugin','transition','event','event-delegate']});
+}, '@VERSION@' ,{requires:['node-pluginhost','plugin','transition','event','event-delegate']});

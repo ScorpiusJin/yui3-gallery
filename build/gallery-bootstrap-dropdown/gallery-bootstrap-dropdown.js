@@ -111,4 +111,4 @@ NS.dropdown_delegation = function() {
 };
 
 
-}, '@VERSION@' ,{requires:['plugin','event','event-outside']});
+}, '@VERSION@' ,{requires:['node-pluginhost','plugin','event','event-outside']});
